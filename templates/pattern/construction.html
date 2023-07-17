@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Construction {{labels[uri]}}{% endblock %}
+{% block content %}
+
+    <h1>Construction {{labels[uri]}}</h1>
+    <p>Package: <a href="../../package/{{package}}/index.html">{{package}}</a></p>
+    {% if prev_pa and next_pa %}
+        <p><a href="../{{prev_pa}}/index.html">< prev</a> | <a href="../{{next_pa}}/index.html">next ></a></p>
+    {% elif next_pa %}
+        <p><a href="../{{next_pa}}/index.html">next > </a></p>
+    {% elif prev_pa %}
+        <p><a href="../{{prev_pa}}/index.html">< prev</a></p>
+    {% endif %}
+    {% if prev_pr and next_pr %}
+        <p><a href="../{{prev_pr}}/index.html">< prev</a> | <a href="../{{next_pr}}/index.html">next ></a> (by absolute priority)</p>
+    {% elif next_pr %}
+        <p><a href="../{{next_pr}}/index.html">next ></a> (by absolute priority)</p>
+    {% elif prev_pr %}
+        <p><a href="../{{prev_pr}}/index.html">< prev</a> (by absolute priority)</p>
+    {% endif %}
+    <p>Description: {{descriptions[uri]|safe}}</p>
+    <p>Priority: {{priority}}</p>
+    <p>Iterate: {{iterate}}</p>
+    <embed type="image/svg+xml" src="../../static/Construction/{{uri}}.svg" class="pattern-image" alt="{{labels[uri]}}" title="{{labels[uri]}}">
+    <p>Matching Pattern:</p>
+
+    <a href="../../matching/{{matching}}/index.html" class="bland-link">
+        <div class="card">
+            <div class="card-image-box">
+                <img src="../../static/Matching/{{matching}}.svg" class="card-img-top" alt="{{labels[uri]}}" title="{{labels[uri]}}">
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">{{labels[matching]}}</h5>
+                <p class="card-text">{{descriptions[matching]|safe}}</p>
+            </div>
+        </div>
+    </a>
+
+{% endblock %}

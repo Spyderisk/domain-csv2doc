@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}Asset {{labels[uri]}}{% endblock %}
+{% block content %}
+
+    <h1>Asset {{labels[uri]}}</h1>
+    <p>Package: <a href="../../package/{{package}}/index.html">{{labels[package]}}</a></p>
+    {% if prev_uri and next_uri %}
+        <p><a href="../{{prev_uri}}/index.html">< prev</a> | <a href="../{{next_uri}}/index.html">next ></a></p>
+    {% elif next_uri %}
+        <p><a href="../{{next_uri}}/index.html">next ></a></p>
+    {% elif prev_uri %}
+        <p><a href="../{{prev_uri}}/index.html">< prev</a></p>
+    {% endif %}
+    <p>Description: {{descriptions[uri]|safe}}</p>
+    <div class="accordion" id="accordionPanelsStayOpen">
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="panelsStayOpen-heading-controls">
+                <button  class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapse-controls" aria-expanded="true" aria-controls="panelsStayOpen-collapse-controls">
+                    Controls ({{controls|length}})
+                </button>
+            </h2>
+
+            <div id="panelsStayOpen-collapse-controls" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-heading-controls">
+                <div class="accordion-body">
+                    {% for x in controls %}
+                        <tr class="description-table">
+                            <td class="description-title"><a href="../../control/{{x}}/index.html">{{labels[x]}}</a></td>
+                            <td><p>{{descriptions[x]|safe}}</p></td>
+                        </tr>
+                    {% endfor %}
+                    {% if controls|length == 0 %}
+                        <p>&nbsp &nbsp &nbsp &nbsp (empty)</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="accordion" id="accordionPanelsStayOpen2">
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="panelsStayOpen-heading-misbehaviour">
+                <button  class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapse-misbehaviour" aria-expanded="true" aria-controls="panelsStayOpen-collapse-misbehaviour">
+                    Misbehaviour ({{misbehaviour|length}})
+                </button>
+            </h2>
+
+            <div id="panelsStayOpen-collapse-misbehaviour" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-heading-misbehaviour">
+                <div class="accordion-body">
+                    <table style="max-width: 90%;">
+                        {% for x in misbehaviour %}
+                            <tr class="description-table">
+                                <td class="description-title"><p><a href="../../misbehaviour/{{x}}/index.html">{{labels[x]}}</a></p></td>
+                                <td><p>{{descriptions[x]|safe}}</p></td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                    {% if misbehaviour|length == 0 %}
+                        <p>&nbsp &nbsp &nbsp &nbsp (empty)</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

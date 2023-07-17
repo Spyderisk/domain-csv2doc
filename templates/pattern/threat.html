@@ -1,0 +1,177 @@
+{% extends "base.html" %}
+{% block title %}Threat {{labels[uri]}}{% endblock %}
+{% block content %}
+
+    <h1>Threat {{labels[uri]}}</h1>
+    <p>Package: <a href="../../package/{{package}}/index.html">{{labels[package]}}</a></p>
+    {% if prev_uri and next_uri %}
+        <p><a href="../{{prev_uri}}/index.html">< prev</a> | <a href="../{{next_uri}}/index.html">next ></a></p>
+    {% elif next_uri %}
+        <p><a href="../{{next_uri}}/index.html">next ></a></p>
+    {% elif prev_uri %}
+        <p><a href="../{{prev_uri}}/index.html">< prev</a></p>
+    {% endif %}
+    <p>Description: {{descriptions[uri]|safe}}</p>
+    {% if triggered_by|length > 0 %}
+        <p>Threat Type: Secondary Threat</p>
+    {% else %}
+        <p>Threat Type: Primary Threat</p>
+    {% endif %}
+    <embed type="image/svg+xml" src="../../static/Threat/{{uri}}.svg" class="pattern-image" alt="{{labels[uri]}}" title="{{labels[uri]}}">
+
+    <p>Matching Pattern:</p>
+    <div class="card">
+        <div class="card-image-box">
+            <img src="../../static/Matching/{{matching}}.svg" class="card-img-top" alt="{{labels[uri]}}" title="{{labels[uri]}}">
+        </div>
+        <div class="card-body">
+            <a href="../../matching/{{matching}}/index.html">
+                <h5 class="card-title">{{labels[matching]}}</h5>
+            </a>
+            <p class="card-text">{{descriptions[matching]|safe}}</p>
+        </div>
+    </div>
+
+    <div class="accordion" id="accordionPanelsStayOpen">
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="panelsStayOpen-heading-tbthreat">
+                <button  class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapse-tbthreat" aria-expanded="true" aria-controls="panelsStayOpen-collapse-tbthreat">
+                    Triggered by Threat ({{triggered_by|length}})
+                </button>
+            </h2>
+
+            <div id="panelsStayOpen-collapse-tbthreat" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-heading-tbthreat">
+                <div class="accordion-body">
+
+                    <div class="row">
+                        {% for x in triggered_by %}
+                            <div class="col-xxl-2 col-lg-3 col-md-4 col-sm-6">
+                                <a href="../../threat/{{x}}/index.html" class="bland-link">
+                                    <div class="card threat-card">
+                                        <div class="card-image-box">
+                                            <img src="../../static/Threat/{{x}}.svg" class="card-img-top" alt="{{labels[uri]}}" title="{{labels[uri]}}">
+                                        </div>
+                                        <div class="card-body">
+                                            <h5 class="card-title">{{labels[x]}}</h5>
+                                            <p class="card-text">{{descriptions[x]|safe}}</p>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        {% endfor %}
+                        {% if triggered_by|length == 0 %}
+                            <p>&nbsp &nbsp &nbsp &nbsp (empty)</p>
+                        {% endif %}
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="accordion" id="accordionPanelsStayOpen2">
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="panelsStayOpen-heading-tthreat">
+                <button  class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapse-tthreat" aria-expanded="true" aria-controls="panelsStayOpen-collapse-tthreat">
+                    Triggers Secondary Threats ({{triggers|length}})
+                </button>
+            </h2>
+
+            <div id="panelsStayOpen-collapse-tthreat" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-heading-tthreat">
+                <div class="accordion-body">
+
+                    <div class="row">
+                        {% for x in triggers %}
+                            <div class="col-xxl-2 col-lg-3 col-md-4 col-sm-6">
+                                <a href="../../threat/{{x}}/index.html" class="bland-link">
+                                    <div class="card threat-card">
+                                        <div class="card-image-box">
+                                            <img src="../../static/Threat/{{x}}.svg" class="card-img-top" alt="{{labels[uri]}}" title="{{labels[uri]}}">
+                                        </div>
+                                        <div class="card-body">
+                                            <h5 class="card-title">{{labels[x]}}</h5>
+                                            <p class="card-text">{{descriptions[x]|safe}}</p>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        {% endfor %}
+                        {% if triggers|length == 0 %}
+                            <p>&nbsp &nbsp &nbsp &nbsp (empty)</p>
+                        {% endif %}
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="accordion" id="accordionPanelsStayOpen3">
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="panelsStayOpen-heading-cthreat">
+                <button  class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapse-cthreat" aria-expanded="true" aria-controls="panelsStayOpen-collapse-cthreat">
+                    Triggered By Control Strategy ({{csg_triggers|length}})
+                </button>
+            </h2>
+
+            <div id="panelsStayOpen-collapse-cthreat" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-heading-csg">
+                <div class="accordion-body">
+                    {% for x in csg_triggers %}
+                        <p>&nbsp &nbsp &nbsp &nbsp <a href="../../csg/{{x}}/index.html">{{labels[x]}}</a></p>
+                    {% endfor %}
+                    {% if csg_triggers|length == 0 %}
+                        <p>&nbsp &nbsp &nbsp &nbsp (empty)</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="accordion" id="accordionPanelsStayOpen4">
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="panelsStayOpen-heading-misbehaviour">
+                <button  class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapse-misbehaviour" aria-expanded="true" aria-controls="panelsStayOpen-collapse-misbehaviour">
+                    Misbehaviour Sets ({{misbehaviour|length}})
+                </button>
+            </h2>
+
+            <div id="panelsStayOpen-collapse-misbehaviour" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-heading-misbehaviour">
+                <div class="accordion-body">
+                    {% for x in range(misbehaviour|length) %}
+                        <p><a href="../../misbehaviour/{{misbehaviour[x]}}/index.html">{{labels[misbehaviour[x]]}}</a> at <a href="../../asset/{{assets[x]}}/index.html">{{labels[assets[x]]}}</a></p>
+                    {% endfor %}
+                    {% if misbehaviour|length == 0 %}
+                        <p>&nbsp &nbsp &nbsp &nbsp (empty)</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="accordion" id="accordionPanelsStayOpen5">
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="panelsStayOpen-heading-csg">
+                <button  class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapse-csg" aria-expanded="true" aria-controls="panelsStayOpen-collapse-csg">
+                    Control Strategies ({{csgs|length}})
+                </button>
+            </h2>
+
+            <div id="panelsStayOpen-collapse-csg" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-heading-csg">
+                <div class="accordion-body">
+                    <table style="max-width: 90%;">
+                        {% for x in csgs %}
+                            <tr class="description-table">
+                                <td class="description-title"><p><a href="../../csg/{{x}}/index.html">{{labels[x]}}</a></p></td>
+                                <td><p>{{descriptions[x]|safe}}</p></td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                    {% if csgs|length == 0 %}
+                        <p>&nbsp &nbsp &nbsp &nbsp (empty)</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

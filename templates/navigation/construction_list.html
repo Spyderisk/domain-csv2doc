@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Construction Patterns{% endblock %}
+{% block content %}
+
+    <h1>Construction Patterns - By Package</h1>
+    <a href="../../construction/priority/index.html"><p>click to view by priority</p></a>
+    <div class="accordion" id="accordionPanelsStayOpen">
+        {% for category in categories %}
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="panelsStayOpen-heading{{category}}">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapse{{category}}" aria-expanded="true" aria-controls="panelsStayOpen-collapse{{category}}">
+                    {{category}} ({{categories[category]|length}})
+                  </button>
+                </h2>
+
+                <div id="panelsStayOpen-collapse{{category}}" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-heading{{category}}">
+                    <div class="accordion-body">
+
+                        <div class="row">
+                            {% for x in categories[category] %}
+                                <div class="col-xxl-2 col-lg-3 col-md-4 col-sm-6">
+                                    <a class="bland-link" href="../{{x}}/index.html">
+                                        <div class="card">
+                                            <div class="card-image-box">
+                                                <img src="../../static/Construction/{{x}}.svg" class="card-img-top" alt="{{labels[uri]}}" title="{{labels[uri]}}">
+                                            </div>
+                                            <div class="card-body">
+                                                <h5 class="card-title">{{labels[x]}}</h5>
+                                                <p class="card-text">{{descriptions[x]|safe}}</p>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            {% endfor %}
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+{% endblock %}

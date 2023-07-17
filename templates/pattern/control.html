@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Control {{labels[uri]}}{% endblock %}
+{% block content %}
+
+    <h1>Control {{labels[uri]}}</h1>
+    <p>Package: <a href="../../package/{{package}}/index.html">{{labels[package]}}</a></p>
+    {% if prev_uri and next_uri %}
+        <p><a href="../{{prev_uri}}/index.html">< prev</a> | <a href="../{{next_uri}}/index.html">next ></a></p>
+    {% elif next_uri %}
+        <p><a href="../{{next_uri}}/index.html">next ></a></p>
+    {% elif prev_uri %}
+        <p><a href="../{{prev_uri}}/index.html">< prev</a></p>
+    {% endif %}
+    <p>Description: {{descriptions[uri]|safe}}</p>
+
+    <div class="accordion" id="accordionPanelsStayOpen">
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="panelsStayOpen-heading-csg">
+                <button  class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapse-csg" aria-expanded="true" aria-controls="panelsStayOpen-collapse-csg">
+                    Control Strategies ({{csgs|length}})
+                </button>
+            </h2>
+
+            <div id="panelsStayOpen-collapse-csg" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-heading-csg">
+                <div class="accordion-body">
+                    <table style="max-width: 90%;">
+                        {% for x in range(csgs|length) %}
+                            <tr class="description-table">
+                                <td class="description-title"><p><a href="../../csg/{{csgs[x]}}/index.html">{{labels[csgs[x]]}}</a>
+                                    {% if optionals[x] %}
+                                         OPTIONAL
+                                    {% endif %}
+                                </p></td>
+                                <td><p>{{descriptions[csgs[x]]|safe}}</p></td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                    {% if csgs|length == 0 %}
+                        <p>&nbsp &nbsp &nbsp &nbsp (empty)</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
