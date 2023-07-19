@@ -34,14 +34,14 @@ They can be found at the following url: <https://graphviz.org/download/>
 
 ## configuration
 
-Amend the configuration.txt document to make the following changes to the
+Amend the config.ini document to make the following changes to the
 tool's behaviour.
 
 ### toggling reduced pattern generation
 
 By default, the tool will generate a vizual representation for all patterns
 present in the csvs provided. To reduce this to a preselected list, edit the
-following lines in configuration.txt, leaving no spaces or empty lines.
+following lines in config.ini, leaving no spaces or empty lines.
 
 - [n, no, f, false] indicate that all patterns will be  generated.
 - [y, yes, t, true] indicate that only the selected patterns will be generated.
@@ -57,7 +57,7 @@ reduced = yes
 
 If the reduced pattern generation has been toggled on, then a list of which
 patterns to generate must be provided. This should be a list of the uri of
-each pattern to be generated. Edit the following lines in configuration.txt,
+each pattern to be generated. Edit the following lines in config.ini,
 leaving no spaces or empty lines.
 
 In any case where a construction pattern or threat pattern are requested,
@@ -84,7 +84,7 @@ reduced_list =
 
 By default, the tool will overwrite any DomainModelDocumentation folder present
 in the target directory. To avoid this, and only overwrite generated patterns,
-edit the following lines in configuration.txt, leaving no spaces or empty lines.
+edit the following lines in config.ini, leaving no spaces or empty lines.
 
 - [n, no, f, false] indicate that any previous folder will be updated.
 - [y, yes, t, true] indicate that any previous folder will be deleted and refreshed.
