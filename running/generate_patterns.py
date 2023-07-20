@@ -128,15 +128,15 @@ def add_to_info_file(type_in, uri, string):
         f.write(string)
 
 
-def extract_asset_info():
-    # Frame of all assets
+def extract_role_info():
+    # Frame of all roles
     rdf = pd.read_csv(os.path.join(csvs_location, 'Role.csv'))
 
     # If example line present, remove
     if 'domain#000000' in rdf['URI'].tolist():
         rdf.drop(0, axis=0, inplace=True)
 
-    # For each asset, create an info page
+    # For each role, create an info page
     for index, row in rdf.iterrows():
         # Check package
         package = row['package']
@@ -773,7 +773,7 @@ def generate_all_patterns(user_input):
 
     setup_folder_structure()
     print('Extracting CSV Info...')
-    extract_asset_info()
+    extract_role_info()
     extract_misbehaviour_info()
     extract_controls_info()
     extract_control_strategy_info()
