@@ -521,7 +521,7 @@ def prepare_search_index():
     add_search_index('misbehaviour', 'misbehaviours', misbehaviour_df)
     add_search_index('csg', 'control strategy strategies', control_strategy_df)
     add_search_index('control', 'controls', controls_df)
-    add_search_index('role', 'roles role roles', role_df)
+    add_search_index('role', 'roles', role_df)
     add_search_index('package', 'packages category categories', package_df, 8)
 
 
