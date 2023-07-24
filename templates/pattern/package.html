@@ -243,20 +243,20 @@
         <div class="accordion-item">
             <h2 class="accordion-header" id="panelsStayOpen-heading-roles">
                 <button  class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapse-roles" aria-expanded="true" aria-controls="panelsStayOpen-collapse-roles">
-                    Roles ({{role|length}})
+                    Roles ({{roles|length}})
                 </button>
             </h2>
 
             <div id="panelsStayOpen-collapse-roles" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-heading-roles">
                 <div class="accordion-body">
                     <table class="description-table">
-                        {% for x in role %}
+                        {% for x in roles %}
                             <tr>
                                 <td class="description-title"><p><a href="../../role/{{x}}/index.html">{{labels[x]}}</a></p></td>
                                 <td><p>{{descriptions[x]|safe}}</p></td>
                             </tr>
                         {% endfor %}
-                        {% if role|length == 0 %}
+                        {% if roles|length == 0 %}
                             <p>&nbsp &nbsp &nbsp &nbsp (empty)</p>
                         {% endif %}
                     </table>
