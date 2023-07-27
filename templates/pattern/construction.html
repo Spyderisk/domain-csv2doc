@@ -3,6 +3,7 @@
 {% block content %}
 
     <h1>Construction {{labels[uri]}}</h1>
+    <p>URI: {{uri}}</p>
     <p>Package: <a href="../../package/{{package}}/index.html">{{package}}</a></p>
     {% if prev_pa and next_pa %}
         <p><a href="../{{prev_pa}}/index.html">< prev</a> | <a href="../{{next_pa}}/index.html">next ></a></p>
