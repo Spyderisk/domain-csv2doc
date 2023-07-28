@@ -482,6 +482,7 @@ def prepare_descriptions():
     add_descriptions(control_strategy_df)
     add_descriptions(controls_df)
     add_descriptions(role_df)
+    add_descriptions(twa_df)
     add_descriptions(package_df, 8)
 
 
