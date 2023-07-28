@@ -6,7 +6,7 @@
     <table style="max-width: 90%;">
         {% for x in packages %}
             <tr class="description-table">
-                <td class="description-title"><p><a href="../{{x}}/index.html">{{labels[x]}}</a></p></td>
+                <td class="description-title"><p><a href="../{{x}}/index.html">{{x}}</a></p></td>
                 <td><p>{{descriptions[x]|safe}}</p></td>
             </tr>
         {% endfor %}

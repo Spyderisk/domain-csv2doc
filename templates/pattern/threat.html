@@ -4,7 +4,7 @@
 
     <h1>Threat {{labels[uri]}}</h1>
     <p>URI: {{uri}}</p>
-    <p>Package: <a href="../../package/{{package}}/index.html">{{labels[package]}}</a></p>
+    <p>Package: <a href="../../package/{{package}}/index.html">{{package}}</a></p>
     {% if prev_uri and next_uri %}
         <p><a href="../{{prev_uri}}/index.html">< prev</a> | <a href="../{{next_uri}}/index.html">next ></a></p>
     {% elif next_uri %}
@@ -18,16 +18,16 @@
     {% else %}
         <p>Threat Type: Primary Threat</p>
     {% endif %}
-    <embed type="image/svg+xml" src="../../static/Threat/{{uri}}.svg" class="pattern-image" alt="{{labels[uri]}}" title="{{labels[uri]}}">
+    <embed type="image/svg+xml" src="../../static/Threat/{{uri}}.svg" class="pattern-image" alt="{{uri}}" title="{{uri}}">
 
     <p>Matching Pattern:</p>
     <div class="card">
         <div class="card-image-box">
-            <img src="../../static/Matching/{{matching}}.svg" class="card-img-top" alt="{{labels[uri]}}" title="{{labels[uri]}}">
+            <img src="../../static/Matching/{{matching}}.svg" class="card-img-top" alt="{{uri}}" title="{{uri}}">
         </div>
         <div class="card-body">
             <a href="../../matching/{{matching}}/index.html">
-                <h5 class="card-title">{{labels[matching]}}</h5>
+                <h5 class="card-title">{{matching}}</h5>
             </a>
             <p class="card-text">{{descriptions[matching]|safe}}</p>
         </div>
@@ -50,10 +50,10 @@
                                 <a href="../../threat/{{x}}/index.html" class="bland-link">
                                     <div class="card threat-card">
                                         <div class="card-image-box">
-                                            <img src="../../static/Threat/{{x}}.svg" class="card-img-top" alt="{{labels[uri]}}" title="{{labels[uri]}}">
+                                            <img src="../../static/Threat/{{x}}.svg" class="card-img-top" alt="{{uri}}" title="{{uri}}">
                                         </div>
                                         <div class="card-body">
-                                            <h5 class="card-title">{{labels[x]}}</h5>
+                                            <h5 class="card-title">{{x}}</h5>
                                             <p class="card-text">{{descriptions[x]|safe}}</p>
                                         </div>
                                     </div>
@@ -87,10 +87,10 @@
                                 <a href="../../threat/{{x}}/index.html" class="bland-link">
                                     <div class="card threat-card">
                                         <div class="card-image-box">
-                                            <img src="../../static/Threat/{{x}}.svg" class="card-img-top" alt="{{labels[uri]}}" title="{{labels[uri]}}">
+                                            <img src="../../static/Threat/{{x}}.svg" class="card-img-top" alt="{{uri}}" title="{{uri}}">
                                         </div>
                                         <div class="card-body">
-                                            <h5 class="card-title">{{labels[x]}}</h5>
+                                            <h5 class="card-title">{{x}}</h5>
                                             <p class="card-text">{{descriptions[x]|safe}}</p>
                                         </div>
                                     </div>
@@ -118,7 +118,7 @@
             <div id="panelsStayOpen-collapse-cthreat" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-heading-csg">
                 <div class="accordion-body">
                     {% for x in csg_triggers %}
-                        <p>&nbsp &nbsp &nbsp &nbsp <a href="../../csg/{{x}}/index.html">{{labels[x]}}</a></p>
+                        <p>&nbsp &nbsp &nbsp &nbsp <a href="../../csg/{{x}}/index.html">{{x}}</a></p>
                     {% endfor %}
                     {% if csg_triggers|length == 0 %}
                         <p>&nbsp &nbsp &nbsp &nbsp (empty)</p>
@@ -139,7 +139,7 @@
             <div id="panelsStayOpen-collapse-misbehaviour" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-heading-misbehaviour">
                 <div class="accordion-body">
                     {% for x in range(misbehaviour|length) %}
-                        <p><a href="../../misbehaviour/{{misbehaviour[x]}}/index.html">{{labels[misbehaviour[x]]}}</a> at <a href="../../role/{{roles[x]}}/index.html">{{labels[roles[x]]}}</a></p>
+                        <p><a href="../../misbehaviour/{{misbehaviour[x]}}/index.html">{{misbehaviour[x]}}</a> at <a href="../../role/{{roles[x]}}/index.html">{{roles[x]}}</a></p>
                     {% endfor %}
                     {% if misbehaviour|length == 0 %}
                         <p>&nbsp &nbsp &nbsp &nbsp (empty)</p>
@@ -162,7 +162,7 @@
                     <table style="max-width: 90%;">
                         {% for x in csgs %}
                             <tr class="description-table">
-                                <td class="description-title"><p><a href="../../csg/{{x}}/index.html">{{labels[x]}}</a></p></td>
+                                <td class="description-title"><p><a href="../../csg/{{x}}/index.html">{{x}}</a></p></td>
                                 <td><p>{{descriptions[x]|safe}}</p></td>
                             </tr>
                         {% endfor %}

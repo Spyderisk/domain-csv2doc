@@ -22,16 +22,16 @@
     <p>Description: {{descriptions[uri]|safe}}</p>
     <p>Priority: {{priority}}</p>
     <p>Iterate: {{iterate}}</p>
-    <embed type="image/svg+xml" src="../../static/Construction/{{uri}}.svg" class="pattern-image" alt="{{labels[uri]}}" title="{{labels[uri]}}">
+    <embed type="image/svg+xml" src="../../static/Construction/{{uri}}.svg" class="pattern-image" alt="{{uri}}" title="{{uri}}">
     <p>Matching Pattern:</p>
 
     <a href="../../matching/{{matching}}/index.html" class="bland-link">
         <div class="card">
             <div class="card-image-box">
-                <img src="../../static/Matching/{{matching}}.svg" class="card-img-top" alt="{{labels[uri]}}" title="{{labels[uri]}}">
+                <img src="../../static/Matching/{{matching}}.svg" class="card-img-top" alt="{{uri}}" title="{{uri}}">
             </div>
             <div class="card-body">
-                <h5 class="card-title">{{labels[matching]}}</h5>
+                <h5 class="card-title">{{matching}}</h5>
                 <p class="card-text">{{descriptions[matching]|safe}}</p>
             </div>
         </div>

@@ -4,7 +4,7 @@
 
     <h1>Matching {{labels[uri]}}</h1>
     <p>URI: {{uri}}</p>
-    <p>Package: <a href="../../package/{{package}}/index.html">{{labels[package]}}</a></p>
+    <p>Package: <a href="../../package/{{package}}/index.html">{{package}}</a></p>
     {% if prev_uri and next_uri %}
         <p><a href="../{{prev_uri}}/index.html">< prev</a> | <a href="../{{next_uri}}/index.html">next ></a></p>
     {% elif next_uri %}
@@ -13,16 +13,16 @@
         <p><a href="../{{prev_uri}}/index.html">< prev</a></p>
     {% endif %}
     <p>Description: {{descriptions[uri]|safe}}</p>
-    <embed type="image/svg+xml" src="../../static/Matching/{{uri}}.svg" class="pattern-image" alt="{{labels[uri]}}" title="{{labels[uri]}}">
+    <embed type="image/svg+xml" src="../../static/Matching/{{uri}}.svg" class="pattern-image" alt="{{uri}}" title="{{uri}}">
 
-    <p>Root Pattern: {{labels[root]}}</p>
+    <p>Root Pattern: {{root}}</p>
     <a href="../../root/{{root}}/index.html" class="bland-link">
         <div class="card">
             <div class="card-image-box">
-                <img src="../../static/Root/{{root}}.svg" class="card-img-top" alt="{{labels[uri]}}" title="{{labels[uri]}}">
+                <img src="../../static/Root/{{root}}.svg" class="card-img-top" alt="{{uri}}" title="{{uri}}">
             </div>
             <div class="card-body">
-                <h5 class="card-title">{{labels[root]}}</h5>
+                <h5 class="card-title">{{root}}</h5>
                 <p class="card-text">{{descriptions[root]|safe}}</p>
             </div>
         </div>
@@ -46,10 +46,10 @@
                                 <a href="../../construction/{{x}}/index.html" class="bland-link">
                                     <div class="card">
                                         <div class="card-image-box">
-                                            <img src="../../static/Construction/{{x}}.svg" class="card-img-top" alt="{{labels[uri]}}" title="{{labels[uri]}}">
+                                            <img src="../../static/Construction/{{x}}.svg" class="card-img-top" alt="{{uri}}" title="{{uri}}">
                                         </div>
                                         <div class="card-body">
-                                            <h5 class="card-title">{{labels[x]}}</h5>
+                                            <h5 class="card-title">{{x}}</h5>
                                             <p class="card-text">{{descriptions[x]|safe}}</p>
                                         </div>
                                     </div>
@@ -83,10 +83,10 @@
                                 <a href="../../threat/{{x}}/index.html" class="bland-link">
                                     <div class="card threat-card">
                                         <div class="card-image-box">
-                                            <img src="../../static/Threat/{{x}}.svg" class="card-img-top" alt="{{labels[uri]}}" title="{{labels[uri]}}">
+                                            <img src="../../static/Threat/{{x}}.svg" class="card-img-top" alt="{{uri}}" title="{{uri}}">
                                         </div>
                                         <div class="card-body">
-                                            <h5 class="card-title">{{labels[x]}}</h5>
+                                            <h5 class="card-title">{{x}}</h5>
                                             <p class="card-text">{{descriptions[x]|safe}}</p>
                                         </div>
                                     </div>
