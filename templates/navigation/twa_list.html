@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}TWA{% endblock %}
+{% block content %}
+
+    <h1>Trustworthiness Attributes</h1>
+    <div class="accordion" id="accordionPanelsStayOpen">
+        {% for category in categories %}
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="panelsStayOpen-heading{{category}}">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapse{{category}}" aria-expanded="true" aria-controls="panelsStayOpen-collapse{{category}}">
+                        {{category}} ({{categories[category]|length}})
+                    </button>
+                </h2>
+
+                <div id="panelsStayOpen-collapse{{category}}" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-heading{{category}}">
+                    <div class="accordion-body">
+                        <table>
+                            {% for x in categories[category] %}
+                                <tr class="description-table">
+                                    <td class="description-title"><p><a href="../{{x}}/index.html">{{labels[x]}}</a></p></td>
+                                    <td><p>{{descriptions[x]|safe}}</p></td>
+                                </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+{% endblock %}
