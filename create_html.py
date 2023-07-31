@@ -301,6 +301,28 @@ def see_package(uri):
                            descriptions=descriptions, labels=labels, search_index=json.dumps(search_index),
                            model_version=model_version)
 
+@app.route('/twa/<uri>/')
+def see_twa(uri):
+    file_path = os.path.join(target_location, 'TWA', uri)
+
+    # Get lines from file
+    lines = get_lines(file_path, False)
+
+    # roles = []
+    # threats = []
+
+    # # Get list of threats and roles
+    # for line in lines[0:-1]:
+    #     if line.startswith('Role:'):
+    #         roles.append(line.split(':')[1])
+    #     elif line.startswith('Threat:'):
+    #         threats.append(line.split(':')[1])
+
+    return render_template('pattern/twa.html', uri=uri, descriptions=descriptions, labels=labels,
+                           package=packages[uri], search_index=json.dumps(search_index),
+                           model_version=model_version, prev_uri=proceeded_by['twa'][uri],
+                           next_uri=followed_by['twa'][uri])
+
 
 @app.route('/')
 def from_start():
@@ -511,6 +533,7 @@ def prepare_packages():
     add_package(control_strategy_df)
     add_package(controls_df)
     add_package(role_df)
+    add_package(twa_df)
 
 
 def add_search_index(item_type, item_name, df, n=7):
