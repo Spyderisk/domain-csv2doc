@@ -308,10 +308,9 @@ def see_twa(uri):
     # Get lines from file
     lines = get_lines(file_path, False)
 
-    # roles = []
-    # threats = []
+    misbehaviours = []
 
-    # # Get list of threats and roles
+    # Get list of threats and roles
     # for line in lines[0:-1]:
     #     if line.startswith('Role:'):
     #         roles.append(line.split(':')[1])
