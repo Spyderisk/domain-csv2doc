@@ -740,6 +740,7 @@ def extract_additional_control_strategy_info():
 def extract_twa_info():
     # Frame of all twa
     twaf = pd.read_csv(os.path.join(csvs_location, 'TrustworthinessAttribute.csv'))
+    mbf = pd.read_csv(os.path.join(csvs_location, 'TWIS.csv'))
 
     # If example line present, remove
     if 'domain#000000' in twaf['URI'].tolist():
@@ -759,12 +760,10 @@ def extract_twa_info():
 
         tws[row['URI']] = []
 
-    # Add misbehaviour set to each misbehaviour
-    # for row in misbehaviour_sets.iterrows():
-    #     # Add role to misbehaviour
-    #     tws[row['hasMisbehaviour']].append('Role:' + row['locatedAt'][7:] + '\n')
-    #     # Add misbehaviour to role
-    #     add_to_info_file('Role', row['locatedAt'][7:], 'Misbehaviour:' + row['hasMisbehaviour'][7:] + '\n')
+    # Add misbehaviour to each twa
+    for index, row in mbf.iterrows():
+        if row['affects'] in tws:
+            tws[row['affects']].append('Misbehaviour:' + row['affectedBy'][7:] + '\n')
 
     # Create info files
     for item in tws:
