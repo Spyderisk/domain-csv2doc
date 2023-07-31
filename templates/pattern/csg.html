@@ -128,7 +128,7 @@
         <div class="accordion-item">
             <h2 class="accordion-header" id="panelsStayOpen-heading-control-sets">
                 <button  class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapse-control-sets" aria-expanded="true" aria-controls="panelsStayOpen-collapse-control-sets">
-                    Control Sets ({{assets|length}})
+                    Control Sets ({{roles|length}})
                 </button>
             </h2>
 
@@ -136,7 +136,7 @@
                 <div class="accordion-body">
                     {% for x in range(controls|length) %}
                         <p><a href="../../control/{{controls[x]}}/index.html">{{labels[controls[x]]}}</a>
-                            at <a href="../../asset/{{assets[x]}}/index.html">{{labels[assets[x]]}}</a>
+                            at <a href="../../role/{{roles[x]}}/index.html">{{labels[roles[x]]}}</a>
                             {% if optionals[x] %}
                                  - OPTIONAL
                             {% endif %}

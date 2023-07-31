@@ -141,8 +141,8 @@ def see_control():
 
 
 @freezer.register_generator
-def see_asset():
-    print('assets', end=' ')
+def see_role():
+    print('roles', end=' ')
     # Get csv
     df = pd.read_csv(os.path.join(csvs_location, 'Role.csv'))
 
@@ -150,7 +150,7 @@ def see_asset():
     if 'domain#000000' in df['URI'].tolist():
         df.drop(0, axis=0, inplace=True)
 
-    # Generate html for each asset
+    # Generate html for each role
     for index, row in df.iterrows():
         yield {'uri': row['URI'][7:]}
 

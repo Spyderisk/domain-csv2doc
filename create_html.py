@@ -40,9 +40,9 @@ construction_priorities = {}
 search_index = []
 model_version = 'error'
 categories = {}
-proceeded_by = {'asset': {}, 'const_pattern': {}, 'const_priority': {}, 'csg': {}, 'controls': {},
+proceeded_by = {'role': {}, 'const_pattern': {}, 'const_priority': {}, 'csg': {}, 'controls': {},
                 'matching': {}, 'misbehaviour': {}, 'root': {}, 'threat': {}}
-followed_by = {'asset': {}, 'const_pattern': {}, 'const_priority': {}, 'csg': {}, 'controls': {},
+followed_by = {'role': {}, 'const_pattern': {}, 'const_priority': {}, 'csg': {}, 'controls': {},
                'matching': {}, 'misbehaviour': {}, 'root': {}, 'threat': {}}
 
 # Data Frames
@@ -143,7 +143,7 @@ def see_threat(uri):
     triggers = []
     csg_triggers = []
     misbehaviour = []
-    assets = []
+    roles = []
     csgs = []
     for line in lines[1:-1]:
         if line.startswith('TriggeredBy:'):
@@ -155,12 +155,12 @@ def see_threat(uri):
         elif line.startswith('Misbehaviour_Set:'):
             m_set = line.split(':')[1].split('@')
             misbehaviour.append(m_set[0])
-            assets.append(m_set[1])
+            roles.append(m_set[1])
         elif line.startswith('CSG:'):
             csgs.append(line.split(':')[1])
 
     return render_template('pattern/threat.html', uri=uri, matching=matching, triggered_by=triggered_by,
-                           triggers=triggers, csg_triggers=csg_triggers, misbehaviour=misbehaviour, assets=assets,
+                           triggers=triggers, csg_triggers=csg_triggers, misbehaviour=misbehaviour, roles=roles,
                            csgs=csgs, descriptions=descriptions, labels=labels, package=packages[uri],
                            search_index=json.dumps(search_index), model_version=model_version,
                            prev_uri=proceeded_by['threat'][uri], next_uri=followed_by['threat'][uri])
@@ -173,18 +173,18 @@ def see_misbehaviour(uri):
     # Get lines from file
     lines = get_lines(file_path, False)
 
-    assets = []
+    roles = []
     threats = []
 
-    # Get list of threats and assets
+    # Get list of threats and roles
     for line in lines[0:-1]:
-        if line.startswith('Asset:'):
-            assets.append(line.split(':')[1])
+        if line.startswith('Role:'):
+            roles.append(line.split(':')[1])
         elif line.startswith('Threat:'):
             threats.append(line.split(':')[1])
 
     return render_template('pattern/misbehaviour.html', uri=uri, descriptions=descriptions, labels=labels,
-                           package=packages[uri], assets=assets, threats=threats, search_index=json.dumps(search_index),
+                           package=packages[uri], roles=roles, threats=threats, search_index=json.dumps(search_index),
                            model_version=model_version, prev_uri=proceeded_by['misbehaviour'][uri],
                            next_uri=followed_by['misbehaviour'][uri])
 
@@ -202,7 +202,7 @@ def see_csg(uri):
     blocked = []
     triggers = []
     controls = []
-    assets = []
+    roles = []
     optionals = []
     for line in lines[0:-1]:
         if line.startswith('Mitigates:'):
@@ -214,11 +214,11 @@ def see_csg(uri):
         elif line.startswith('ControlSet:'):
             c_set = line.split(':')[1].split('-')
             controls.append(c_set[1])
-            assets.append('Role_' + c_set[2])
+            roles.append('Role_' + c_set[2])
             optionals.append(c_set[3] == 'True')
 
     return render_template('pattern/csg.html', uri=uri, mitigated=mitigated, blocked=blocked, triggers=triggers,
-                           controls=controls, assets=assets, optionals=optionals, descriptions=descriptions,
+                           controls=controls, roles=roles, optionals=optionals, descriptions=descriptions,
                            labels=labels, package=packages[uri], search_index=json.dumps(search_index),
                            model_version=model_version, prev_uri=proceeded_by['csg'][uri],
                            next_uri=followed_by['csg'][uri])
@@ -245,9 +245,9 @@ def see_control(uri):
                            next_uri=followed_by['controls'][uri])
 
 
-@app.route('/asset/<uri>/')
-def see_asset(uri):
-    file_path = os.path.join(target_location, 'Asset', uri)
+@app.route('/role/<uri>/')
+def see_role(uri):
+    file_path = os.path.join(target_location, 'Role', uri)
 
     # Get lines from file
     lines = get_lines(file_path, False)
@@ -262,10 +262,10 @@ def see_asset(uri):
         elif line.startswith('Misbehaviour:'):
             misbehaviour.append(line.split(':')[1])
 
-    return render_template('pattern/asset.html', uri=uri, descriptions=descriptions, labels=labels, controls=controls,
+    return render_template('pattern/role.html', uri=uri, descriptions=descriptions, labels=labels, controls=controls,
                            misbehaviour=misbehaviour, search_index=json.dumps(search_index), package=packages[uri],
-                           model_version=model_version, prev_uri=proceeded_by['asset'][uri],
-                           next_uri=followed_by['asset'][uri])
+                           model_version=model_version, prev_uri=proceeded_by['role'][uri],
+                           next_uri=followed_by['role'][uri])
 
 
 def get_from_package(df, package):
@@ -293,10 +293,10 @@ def see_package(uri):
     misbehaviour = get_from_package(misbehaviour_df, uri)
     csg = get_from_package(control_strategy_df, uri)
     control = get_from_package(controls_df, uri)
-    asset = get_from_package(role_df, uri)
+    role = get_from_package(role_df, uri)
 
     return render_template('pattern/package.html', uri=uri, root=root, matching=matching, construction=construction,
-                           threats=threats, misbehaviour=misbehaviour, csg=csg, control=control, asset=asset,
+                           threats=threats, misbehaviour=misbehaviour, csg=csg, control=control, role=role,
                            descriptions=descriptions, labels=labels, search_index=json.dumps(search_index),
                            model_version=model_version)
 
@@ -390,9 +390,9 @@ def control_list():
                            labels=labels, search_index=json.dumps(search_index), model_version=model_version)
 
 
-@app.route('/asset/list/')
-def asset_list():
-    return render_template('navigation/asset_list.html', categories=categories['asset'], descriptions=descriptions,
+@app.route('/role/list/')
+def role_list():
+    return render_template('navigation/role_list.html', categories=categories['role'], descriptions=descriptions,
                            labels=labels, search_index=json.dumps(search_index), model_version=model_version)
 
 
@@ -521,7 +521,7 @@ def prepare_search_index():
     add_search_index('misbehaviour', 'misbehaviours', misbehaviour_df)
     add_search_index('csg', 'control strategy strategies', control_strategy_df)
     add_search_index('control', 'controls', controls_df)
-    add_search_index('asset', 'assets role roles', role_df)
+    add_search_index('role', 'roles', role_df)
     add_search_index('package', 'packages category categories', package_df, 8)
 
 
@@ -625,7 +625,7 @@ def prepare_prev_next_indexing():
     set_category_prev_next('misbehaviour', misbehaviour_df)
     set_category_prev_next('csg', control_strategy_df)
     set_category_prev_next('controls', controls_df)
-    set_category_prev_next('asset', role_df)
+    set_category_prev_next('role', role_df)
 
     sorted_by_priority = construction_df.sort_values(by=['hasPriority'], inplace=False)
     add_prev_next_index('const_priority', sorted_by_priority)

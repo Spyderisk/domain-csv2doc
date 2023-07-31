@@ -113,7 +113,7 @@ def setup_folder_structure():
         os.mkdir(os.path.join(target_location, 'Misbehaviour'))
         os.mkdir(os.path.join(target_location, 'Control Strategy'))
         os.mkdir(os.path.join(target_location, 'Controls'))
-        os.mkdir(os.path.join(target_location, 'Asset'))
+        os.mkdir(os.path.join(target_location, 'Role'))
 
 
 def create_info_file(file, string):
@@ -128,24 +128,24 @@ def add_to_info_file(type_in, uri, string):
         f.write(string)
 
 
-def extract_asset_info():
-    # Frame of all assets
+def extract_role_info():
+    # Frame of all roles
     rdf = pd.read_csv(os.path.join(csvs_location, 'Role.csv'))
 
     # If example line present, remove
     if 'domain#000000' in rdf['URI'].tolist():
         rdf.drop(0, axis=0, inplace=True)
 
-    # For each asset, create an info page
+    # For each role, create an info page
     for index, row in rdf.iterrows():
         # Check package
         package = row['package']
         if package == 'package#Unassigned':
-            unassigned_list.append('Asset ' + row['URI'])
+            unassigned_list.append('Role ' + row['URI'])
         elif package != package:
-            blank_list.append('Asset ' + row['URI'])
+            blank_list.append('Role ' + row['URI'])
 
-        create_info_file(os.path.join(target_location, 'Asset', row['URI'][7:]), '')
+        create_info_file(os.path.join(target_location, 'Role', row['URI'][7:]), '')
 
 
 def extract_misbehaviour_info():
@@ -173,10 +173,10 @@ def extract_misbehaviour_info():
 
     # Add misbehaviour set to each misbehaviour
     for index, row in misbehaviour_sets.iterrows():
-        # Add asset to misbehaviour
-        misbehaviours[row['hasMisbehaviour']].append('Asset:' + row['locatedAt'][7:] + '\n')
-        # Add misbehaviour to asset
-        add_to_info_file('Asset', row['locatedAt'][7:], 'Misbehaviour:' + row['hasMisbehaviour'][7:] + '\n')
+        # Add role to misbehaviour
+        misbehaviours[row['hasMisbehaviour']].append('Role:' + row['locatedAt'][7:] + '\n')
+        # Add misbehaviour to role
+        add_to_info_file('Role', row['locatedAt'][7:], 'Misbehaviour:' + row['hasMisbehaviour'][7:] + '\n')
 
     # Create info files
     for item in misbehaviours:
@@ -203,9 +203,9 @@ def extract_controls_info():
 
         create_info_file(os.path.join(target_location, 'Controls', row['URI'][7:]), '')
 
-    # Add controls to each asset
+    # Add controls to each role
     for index, row in control_sets.iterrows():
-        add_to_info_file('Asset', row['locatedAt'][7:], 'Control:' + row['hasControl'][7:] + '\n')
+        add_to_info_file('Role', row['locatedAt'][7:], 'Control:' + row['hasControl'][7:] + '\n')
 
 
 def extract_control_strategy_info():
@@ -773,7 +773,7 @@ def generate_all_patterns(user_input):
 
     setup_folder_structure()
     print('Extracting CSV Info...')
-    extract_asset_info()
+    extract_role_info()
     extract_misbehaviour_info()
     extract_controls_info()
     extract_control_strategy_info()

@@ -138,7 +138,7 @@
             <div id="panelsStayOpen-collapse-misbehaviour" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-heading-misbehaviour">
                 <div class="accordion-body">
                     {% for x in range(misbehaviour|length) %}
-                        <p><a href="../../misbehaviour/{{misbehaviour[x]}}/index.html">{{labels[misbehaviour[x]]}}</a> at <a href="../../asset/{{assets[x]}}/index.html">{{labels[assets[x]]}}</a></p>
+                        <p><a href="../../misbehaviour/{{misbehaviour[x]}}/index.html">{{labels[misbehaviour[x]]}}</a> at <a href="../../role/{{roles[x]}}/index.html">{{labels[roles[x]]}}</a></p>
                     {% endfor %}
                     {% if misbehaviour|length == 0 %}
                         <p>&nbsp &nbsp &nbsp &nbsp (empty)</p>
