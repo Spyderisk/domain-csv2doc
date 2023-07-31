@@ -308,17 +308,14 @@ def see_twa(uri):
     # Get lines from file
     lines = get_lines(file_path, False)
 
-    misbehaviours = []
 
-    # Get list of threats and roles
-    # for line in lines[0:-1]:
-    #     if line.startswith('Role:'):
-    #         roles.append(line.split(':')[1])
-    #     elif line.startswith('Threat:'):
-    #         threats.append(line.split(':')[1])
+    # Get misbehaviour
+    for line in lines[0:-1]:
+        if line.startswith('Misbehaviour:'):
+            misbehaviour = line.split(':')[1]
 
     return render_template('pattern/twa.html', uri=uri, descriptions=descriptions, labels=labels,
-                           package=packages[uri], search_index=json.dumps(search_index),
+                           package=packages[uri], misbehaviour=misbehaviour, search_index=json.dumps(search_index),
                            model_version=model_version, prev_uri=proceeded_by['twa'][uri],
                            next_uri=followed_by['twa'][uri])
 
