@@ -3,7 +3,8 @@
 {% block content %}
 
     <h1>Control {{labels[uri]}}</h1>
-    <p>Package: <a href="../../package/{{package}}/index.html">{{labels[package]}}</a></p>
+    <p>URI: {{uri}}</p>
+    <p>Package: <a href="../../package/{{package}}/index.html">{{package}}</a></p>
     {% if prev_uri and next_uri %}
         <p><a href="../{{prev_uri}}/index.html">< prev</a> | <a href="../{{next_uri}}/index.html">next ></a></p>
     {% elif next_uri %}
@@ -26,7 +27,7 @@
                     <table style="max-width: 90%;">
                         {% for x in range(csgs|length) %}
                             <tr class="description-table">
-                                <td class="description-title"><p><a href="../../csg/{{csgs[x]}}/index.html">{{labels[csgs[x]]}}</a>
+                                <td class="description-title"><p><a href="../../csg/{{csgs[x]}}/index.html">{{csgs[x]}}</a>
                                     {% if optionals[x] %}
                                          OPTIONAL
                                     {% endif %}
