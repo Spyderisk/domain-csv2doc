@@ -13,7 +13,34 @@
     {% endif %}
     <p>Description: {{descriptions[uri]|safe}}</p>
     <p>This attribute is undermined by the misbehaviour <a href="../../misbehaviour/{{misbehaviour}}/index.html">{{misbehaviour}}</a></p>
-    <!-- <div class="accordion" id="accordionPanelsStayOpen">
+
+    <div class="accordion" id="accordionPanelsStayOpen2">
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="panelsStayOpen-heading-asset">
+                <button  class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapse-asset" aria-expanded="true" aria-controls="panelsStayOpen-collapse-asset">
+                    Assets ({{assets|length}})
+                </button>
+            </h2>
+
+            <div id="panelsStayOpen-collapse-asset" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-heading-asset">
+                <div class="accordion-body">
+                    <table style="max-width: 90%;">
+                        {% for x in assets %}
+                            <tr class="description-table">
+                                <td class="description-title"><p><a href="../../asset/{{x}}/index.html">{{x}}</a></p></td>
+                                <td><p>{{descriptions[x]|safe}}</p></td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                    {% if assets|length == 0 %}
+                        <p>&nbsp &nbsp &nbsp &nbsp (empty)</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="accordion" id="accordionPanelsStayOpen">
         <div class="accordion-item">
             <h2 class="accordion-header" id="panelsStayOpen-heading-threats">
                 <button  class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapse-threats" aria-expanded="true" aria-controls="panelsStayOpen-collapse-threats">
@@ -45,32 +72,6 @@
                         {% endif %}
                     </div>
 
-                </div>
-            </div>
-        </div>
-    </div> -->
-
-    <div class="accordion" id="accordionPanelsStayOpen2">
-        <div class="accordion-item">
-            <h2 class="accordion-header" id="panelsStayOpen-heading-asset">
-                <button  class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapse-asset" aria-expanded="true" aria-controls="panelsStayOpen-collapse-asset">
-                    Assets ({{assets|length}})
-                </button>
-            </h2>
-
-            <div id="panelsStayOpen-collapse-asset" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-heading-asset">
-                <div class="accordion-body">
-                    <table style="max-width: 90%;">
-                        {% for x in assets %}
-                            <tr class="description-table">
-                                <td class="description-title"><p><a href="../../asset/{{x}}/index.html">{{x}}</a></p></td>
-                                <td><p>{{descriptions[x]|safe}}</p></td>
-                            </tr>
-                        {% endfor %}
-                    </table>
-                    {% if assets|length == 0 %}
-                        <p>&nbsp &nbsp &nbsp &nbsp (empty)</p>
-                    {% endif %}
                 </div>
             </div>
         </div>

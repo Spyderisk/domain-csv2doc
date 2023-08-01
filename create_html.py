@@ -309,6 +309,7 @@ def see_twa(uri):
     lines = get_lines(file_path, False)
 
     assets = []
+    threats = []
 
     # Get misbehaviour and assets
     for line in lines[0:-1]:
@@ -316,9 +317,11 @@ def see_twa(uri):
             misbehaviour = line.split(':')[1]
         elif line.startswith('Asset:'):
             assets.append(line.split(':')[1])
+        elif line.startswith('ThreatCaused:'):
+            threats.append(line.split(':')[1])
 
     return render_template('pattern/twa.html', uri=uri, descriptions=descriptions, labels=labels,
-                           package=packages[uri], misbehaviour=misbehaviour, assets=assets, search_index=json.dumps(search_index),
+                           package=packages[uri], misbehaviour=misbehaviour, assets=assets, threats=threats, search_index=json.dumps(search_index),
                            model_version=model_version, prev_uri=proceeded_by['twa'][uri],
                            next_uri=followed_by['twa'][uri])
 
