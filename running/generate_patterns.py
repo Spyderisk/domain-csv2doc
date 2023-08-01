@@ -741,6 +741,7 @@ def extract_twa_info():
     # Frame of all twa
     twaf = pd.read_csv(os.path.join(csvs_location, 'TrustworthinessAttribute.csv'))
     mbf = pd.read_csv(os.path.join(csvs_location, 'TWIS.csv'))
+    assets = pd.read_csv(os.path.join(csvs_location, 'TWALocations.csv'))
 
     # If example line present, remove
     if 'domain#000000' in twaf['URI'].tolist():
@@ -762,8 +763,13 @@ def extract_twa_info():
 
     # Add misbehaviour to each twa
     for index, row in mbf.iterrows():
+        #TODO: remove this if statement (makes the code work with old version of domain model)
         if row['affects'] in tws:
             tws[row['affects']].append('Misbehaviour:' + row['affectedBy'][7:] + '\n')
+
+    # Add assets to each twa
+    for index, row in assets.iterrows():
+        tws[row['URI']].append('Asset:' + row['metaLocatedAt'][7:] + '\n')
 
     # Create info files
     for item in tws:
