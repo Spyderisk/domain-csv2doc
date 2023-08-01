@@ -295,9 +295,10 @@ def see_package(uri):
     csg = get_from_package(control_strategy_df, uri)
     control = get_from_package(controls_df, uri)
     role = get_from_package(role_df, uri)
+    twa = get_from_package(twa_df, uri)
 
     return render_template('pattern/package.html', uri=uri, root=root, matching=matching, construction=construction,
-                           threats=threats, misbehaviour=misbehaviour, csg=csg, control=control, role=role,
+                           threats=threats, misbehaviour=misbehaviour, csg=csg, control=control, role=role, twa=twa,
                            descriptions=descriptions, labels=labels, search_index=json.dumps(search_index),
                            model_version=model_version)
 
