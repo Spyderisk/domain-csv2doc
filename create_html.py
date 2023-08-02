@@ -609,6 +609,8 @@ def prepare_labels():
     add_labels(control_strategy_df)
     add_labels(controls_df)
     add_labels(role_df)
+    add_labels(twa_df)
+    add_labels(asset_df)
     add_labels(package_df, 8)
 
 
