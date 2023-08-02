@@ -183,6 +183,21 @@ def see_twa():
     for index, row in df.iterrows():
         yield {'uri': row['URI'][7:]}
 
+@freezer.register_generator
+def see_asset():
+    print('asset', end=', ')
+    # Get csv
+    df = pd.read_csv(os.path.join(csvs_location, 'DomainAsset.csv'))
+
+    # Remove example line where present
+    if 'domain#000000' in df['URI'].tolist():
+        df.drop(0, axis=0, inplace=True)
+
+    # Generate html for each twa
+    for index, row in df.iterrows():
+        yield {'uri': row['URI'][7:]}
+
+
 def freeze_html(csvs_location_in):
     global csvs_location
     csvs_location = csvs_location_in

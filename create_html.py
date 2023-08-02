@@ -328,6 +328,22 @@ def see_twa(uri):
                            model_version=model_version, prev_uri=proceeded_by['twa'][uri],
                            next_uri=followed_by['twa'][uri])
 
+@app.route('/asset/<uri>/')
+def see_asset(uri):
+    file_path = os.path.join(target_location, 'Asset', uri)
+
+    # Get lines from file
+    lines = get_lines(file_path, False)
+
+    # Get misbehaviour and assets
+    # for line in lines[0:-1]:
+    #     if line.startswith('Misbehaviour:'):
+    #         misbehaviour = line.split(':')[1]
+
+    return render_template('pattern/asset.html', uri=uri, descriptions=descriptions, labels=labels,
+                           package=packages[uri], search_index=json.dumps(search_index),
+                           model_version=model_version, prev_uri=proceeded_by['asset'][uri],
+                           next_uri=followed_by['asset'][uri])
 
 @app.route('/')
 def from_start():
