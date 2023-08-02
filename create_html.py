@@ -41,9 +41,9 @@ search_index = []
 model_version = 'error'
 categories = {}
 proceeded_by = {'role': {}, 'const_pattern': {}, 'const_priority': {}, 'csg': {}, 'controls': {},
-                'matching': {}, 'misbehaviour': {}, 'root': {}, 'threat': {}, 'twa': {}}
+                'matching': {}, 'misbehaviour': {}, 'root': {}, 'threat': {}, 'twa': {}, 'asset': {}}
 followed_by = {'role': {}, 'const_pattern': {}, 'const_priority': {}, 'csg': {}, 'controls': {},
-               'matching': {}, 'misbehaviour': {}, 'root': {}, 'threat': {}, 'twa': {}}
+               'matching': {}, 'misbehaviour': {}, 'root': {}, 'threat': {}, 'twa': {}, 'asset': {}}
 
 # Data Frames
 root_df = pd
@@ -56,6 +56,7 @@ controls_df = pd
 role_df = pd
 package_df = pd
 twa_df = pd
+asset_df = pd
 
 
 def get_lines(file_path, needs_svg):
@@ -296,10 +297,11 @@ def see_package(uri):
     control = get_from_package(controls_df, uri)
     role = get_from_package(role_df, uri)
     twa = get_from_package(twa_df, uri)
+    asset = get_from_package(asset_df, uri)
 
     return render_template('pattern/package.html', uri=uri, root=root, matching=matching, construction=construction,
                            threats=threats, misbehaviour=misbehaviour, csg=csg, control=control, role=role, twa=twa,
-                           descriptions=descriptions, labels=labels, search_index=json.dumps(search_index),
+                           asset=asset , descriptions=descriptions, labels=labels, search_index=json.dumps(search_index),
                            model_version=model_version)
 
 @app.route('/twa/<uri>/')
@@ -439,6 +441,12 @@ def twa_list():
                            descriptions=descriptions, labels=labels, search_index=json.dumps(search_index),
                            model_version=model_version)
 
+@app.route('/asset/list/')
+def asset_list():
+    return render_template('navigation/asset_list.html', categories=categories['asset'],
+                           descriptions=descriptions, labels=labels, search_index=json.dumps(search_index),
+                           model_version=model_version)
+
 def prepare_css():
     # Puts a copy of the css into the static file
     shutil.copy(os.path.join('templates', 'custom.css'), 'static')
@@ -470,6 +478,7 @@ def prepare_data_frames(csvs_location):
     global role_df
     global package_df
     global twa_df
+    global asset_df
 
     # Collect data frame from csv
     root_df = get_csv(csvs_location, 'RootPattern.csv')
@@ -483,6 +492,7 @@ def prepare_data_frames(csvs_location):
     role_df = get_csv(csvs_location, 'Role.csv')
     package_df = get_csv(csvs_location, 'Packages.csv').rename(columns={'Package': 'label', 'Description': 'comment'})
     twa_df = get_csv(csvs_location, 'TrustworthinessAttribute.csv')
+    asset_df = get_csv(csvs_location, 'DomainAsset.csv')
     set_domain_model_version(get_csv(csvs_location, 'DomainModel.csv'))
 
 
@@ -508,6 +518,7 @@ def prepare_descriptions():
     add_descriptions(controls_df)
     add_descriptions(role_df)
     add_descriptions(twa_df)
+    add_descriptions(asset_df)
     add_descriptions(package_df, 8)
 
 
@@ -537,6 +548,7 @@ def prepare_packages():
     add_package(controls_df)
     add_package(role_df)
     add_package(twa_df)
+    add_package(asset_df)
 
 
 def add_search_index(item_type, item_name, df, n=7):
@@ -662,6 +674,7 @@ def prepare_prev_next_indexing():
     set_category_prev_next('controls', controls_df)
     set_category_prev_next('role', role_df)
     set_category_prev_next('twa', twa_df)
+    set_category_prev_next('asset', asset_df)
 
     sorted_by_priority = construction_df.sort_values(by=['hasPriority'], inplace=False)
     add_prev_next_index('const_priority', sorted_by_priority)
