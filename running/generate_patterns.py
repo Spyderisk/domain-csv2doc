@@ -114,6 +114,7 @@ def setup_folder_structure():
         os.mkdir(os.path.join(target_location, 'Control Strategy'))
         os.mkdir(os.path.join(target_location, 'Controls'))
         os.mkdir(os.path.join(target_location, 'Role'))
+        os.mkdir(os.path.join(target_location, 'TWA'))
 
 
 def create_info_file(file, string):
@@ -736,6 +737,53 @@ def extract_additional_control_strategy_info():
     for index, row in control_triggers.iterrows():
         add_to_info_file('Threat', row['triggers'][7:], 'TriggeredByCSG:' + row['URI'][7:] + '\n')
 
+def extract_twa_info():
+    # Frame of all twa
+    twaf = pd.read_csv(os.path.join(csvs_location, 'TrustworthinessAttribute.csv'))
+    mbf = pd.read_csv(os.path.join(csvs_location, 'TWIS.csv'))
+    assets = pd.read_csv(os.path.join(csvs_location, 'TWALocations.csv'))
+    threatEntryPoints = pd.read_csv(os.path.join(csvs_location, 'ThreatEntryPoints.csv'))
+    twas = pd.read_csv(os.path.join(csvs_location, 'TWAS.csv'))
+
+    # If example line present, remove
+    if 'domain#000000' in twaf['URI'].tolist():
+        twaf.drop(0, axis=0, inplace=True)
+
+    # Create dictionary to hold info until creating info files
+    tws = {}
+
+    # Create info file for each twa
+    for index, row in twaf.iterrows():
+        # Check package
+        package = row['package']
+        if package == 'package#Unassigned':
+            unassigned_list.append('TWA ' + row['URI'])
+        elif package != package:
+            blank_list.append('TWA ' + row['URI'])
+
+        tws[row['URI']] = []
+
+    # Add misbehaviour to each twa
+    for index, row in mbf.iterrows():
+        #TODO: remove this if statement (makes the code work with old version of domain model)
+        if row['affects'] in tws:
+            tws[row['affects']].append('Misbehaviour:' + row['affectedBy'][7:] + '\n')
+
+    # Add assets to each twa
+    for index, row in assets.iterrows():
+        tws[row['URI']].append('Asset:' + row['metaLocatedAt'][7:] + '\n')
+
+    # Add threats caused by each twa
+    for index, row in threatEntryPoints.iterrows():
+        threatURI = row['URI']
+        twasURI = row['hasEntryPoint']
+        twaURI = twas.loc[twas['URI'] == twasURI]['hasTrustworthinessAttribute'].iloc[0]
+
+        tws[twaURI].append('ThreatCaused:' + threatURI[7:] + '\n')
+
+    # Create info files
+    for item in tws:
+        create_info_file(os.path.join(target_location, 'TWA', item[7:]), ''.join(tws[item]))
 
 def create_report():
     # Create report string including current date & time
@@ -777,6 +825,7 @@ def generate_all_patterns(user_input):
     extract_misbehaviour_info()
     extract_controls_info()
     extract_control_strategy_info()
+    extract_twa_info()
 
     print('Generating Root Patterns...')
     generate_root_patterns()

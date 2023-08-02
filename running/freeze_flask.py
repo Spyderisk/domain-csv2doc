@@ -169,6 +169,19 @@ def see_package():
     for index, row in df.iterrows():
         yield {'uri': row['URI'][8:]}
 
+@freezer.register_generator
+def see_twa():
+    print('twa', end=', ')
+    # Get csv
+    df = pd.read_csv(os.path.join(csvs_location, 'TrustworthinessAttribute.csv'))
+
+    # Remove example line where present
+    if 'domain#000000' in df['URI'].tolist():
+        df.drop(0, axis=0, inplace=True)
+
+    # Generate html for each twa
+    for index, row in df.iterrows():
+        yield {'uri': row['URI'][7:]}
 
 def freeze_html(csvs_location_in):
     global csvs_location

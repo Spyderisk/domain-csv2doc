@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block title %}Trustworthiness Attribute {{labels[uri]}}{% endblock %}
+{% block content %}
+
+    <h1>Trustworthiness Attribute {{uri}}</h1>
+    <p>Package: <a href="../../package/{{package}}/index.html">{{package}}</a></p>
+    {% if prev_uri and next_uri %}
+        <p><a href="../{{prev_uri}}/index.html">< prev</a> | <a href="../{{next_uri}}/index.html">next ></a></p>
+    {% elif next_uri %}
+        <p><a href="../{{next_uri}}/index.html">next ></a></p>
+    {% elif prev_uri %}
+        <p><a href="../{{prev_uri}}/index.html">< prev</a></p>
+    {% endif %}
+    <p>Description: {{descriptions[uri]|safe}}</p>
+    <p>This attribute is undermined by the misbehaviour <a href="../../misbehaviour/{{misbehaviour}}/index.html">{{misbehaviour}}</a></p>
+
+    <div class="accordion" id="accordionPanelsStayOpen2">
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="panelsStayOpen-heading-asset">
+                <button  class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapse-asset" aria-expanded="true" aria-controls="panelsStayOpen-collapse-asset">
+                    Assets ({{assets|length}})
+                </button>
+            </h2>
+
+            <div id="panelsStayOpen-collapse-asset" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-heading-asset">
+                <div class="accordion-body">
+                    <table style="max-width: 90%;">
+                        {% for x in assets %}
+                            <tr class="description-table">
+                                <td class="description-title"><p><a href="../../asset/{{x}}/index.html">{{x}}</a></p></td>
+                                <td><p>{{descriptions[x]|safe}}</p></td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                    {% if assets|length == 0 %}
+                        <p>&nbsp &nbsp &nbsp &nbsp (empty)</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="accordion" id="accordionPanelsStayOpen">
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="panelsStayOpen-heading-threats">
+                <button  class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapse-threats" aria-expanded="true" aria-controls="panelsStayOpen-collapse-threats">
+                    Threats ({{threats|length}})
+                </button>
+            </h2>
+
+            <div id="panelsStayOpen-collapse-threats" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-heading-threats">
+                <div class="accordion-body">
+
+                    <div class="row">
+                        {% for x in threats %}
+                            <div class="col-xxl-2 col-lg-3 col-md-4 col-sm-6">
+                                <a href="../../threat/{{x}}/index.html" class="bland-link">
+                                    <div class="card threat-card">
+                                        <div class="card-image-box">
+                                            <img src="../../static/Threat/{{x}}.svg" class="card-img-top" alt="{{labels[uri]}}" title="{{labels[uri]}}">
+                                        </div>
+                                        <div class="card-body">
+                                            <h5 class="card-title">{{labels[x]}}</h5>
+                                            <p class="card-text">{{descriptions[x]|safe}}</p>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        {% endfor %}
+                        {% if threats|length == 0 %}
+                            <p>&nbsp &nbsp &nbsp &nbsp (empty)</p>
+                        {% endif %}
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
