@@ -115,6 +115,7 @@ def setup_folder_structure():
         os.mkdir(os.path.join(target_location, 'Controls'))
         os.mkdir(os.path.join(target_location, 'Role'))
         os.mkdir(os.path.join(target_location, 'TWA'))
+        os.mkdir(os.path.join(target_location, 'Asset'))
 
 
 def create_info_file(file, string):
@@ -785,6 +786,36 @@ def extract_twa_info():
     for item in tws:
         create_info_file(os.path.join(target_location, 'TWA', item[7:]), ''.join(tws[item]))
 
+def extract_asset_info():
+    # Frame of all twa
+    assetf = pd.read_csv(os.path.join(csvs_location, 'DomainAsset.csv'))
+
+    # If example line present, remove
+    if 'domain#000000' in assetf['URI'].tolist():
+        assetf.drop(0, axis=0, inplace=True)
+
+    # Create dictionary to hold info until creating info files
+    assets = {}
+
+    # Create info file for each asset
+    for index, row in assetf.iterrows():
+        # Check package
+        package = row['package']
+        if package == 'package#Unassigned':
+            unassigned_list.append('Asset ' + row['URI'])
+        elif package != package:
+            blank_list.append('Asset ' + row['URI'])
+
+        assets[row['URI']] = []
+
+    # Add icon name to each asset
+    for index, row in assetf.iterrows():
+        assets[row['URI']].append('Icon:' + str(row['icon']) + '\n')
+
+    # Create info files
+    for item in assets:
+        create_info_file(os.path.join(target_location, 'Asset', item[7:]), ''.join(assets[item]))
+
 def create_report():
     # Create report string including current date & time
     report = ['\n' + 'Program completed at:' + '\n     ', str(datetime.now(tz=None)), '\n']
@@ -826,6 +857,7 @@ def generate_all_patterns(user_input):
     extract_controls_info()
     extract_control_strategy_info()
     extract_twa_info()
+    extract_asset_info()
 
     print('Generating Root Patterns...')
     generate_root_patterns()
