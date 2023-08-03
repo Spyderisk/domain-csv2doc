@@ -2,7 +2,7 @@
 {% block title %}Asset {{labels[uri]}}{% endblock %}
 {% block content %}
 
-    <div style="display: flex; gap: 10px">
+    <div style="display: flex; gap: 10px; height: 80px;">
         <h1 style="align-self: center">Asset {{labels[uri]}}</h1>
         {% if icon != 'nan' %}
             <img src="../../static/Images/{{icon}}" class="large-icon">
