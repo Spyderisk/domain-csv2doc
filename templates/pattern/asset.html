@@ -2,7 +2,12 @@
 {% block title %}Asset {{labels[uri]}}{% endblock %}
 {% block content %}
 
-    <h1>Asset {{labels[uri]}}</h1>
+    <div style="display: flex; gap: 10px">
+        <h1 style="align-self: center">Asset {{labels[uri]}}</h1>
+        {% if icon != 'nan' %}
+            <img src="../../static/Images/{{icon}}" class="large-icon">
+        {% endif %}
+    </div>
     <p>URI: {{uri}}</p>
     <p>Package: <a href="../../package/{{package}}/index.html">{{package}}</a></p>
     {% if prev_uri and next_uri %}
