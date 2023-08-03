@@ -198,12 +198,12 @@ def see_asset():
         yield {'uri': row['URI'][7:]}
 
 
-def freeze_html(csvs_location_in):
+def freeze_html(domain_model_location_in):
     global csvs_location
-    csvs_location = csvs_location_in
+    csvs_location = os.path.join(domain_model_location_in, 'csv')
 
     print('Preparing faux server...')
-    generate_html(csvs_location_in)
+    generate_html(csvs_location)
     print('Generating html...')
     freezer.freeze()
     print('     PROGRAM COMPLETE: The Home html file is in the following location:')

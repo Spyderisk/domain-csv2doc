@@ -33,9 +33,11 @@ import pandas as pd
 from graphviz import Digraph
 import sys
 import os
+import shutil
 
 # Running Values
 csvs_location = ''
+images_location = ''
 target_location = os.path.join(os.path.dirname(__file__), '..', 'static')
 root_graphs_setup = {}
 root_graphs_final = {}
@@ -70,7 +72,11 @@ blank_list = []
 
 def set_csv_location(user_input):
     global csvs_location
-    csvs_location = user_input
+    csvs_location = os.path.join(user_input, 'csv')
+
+def set_images_location(user_input):
+    global images_location
+    images_location = os.path.join(user_input, 'images')
 
 
 def check_configuration():
@@ -106,6 +112,8 @@ def setup_folder_structure():
     if not os.path.isdir(target_location):
         os.mkdir(target_location)
 
+        os.mkdir(os.path.join(target_location, 'Images'))
+
         os.mkdir(os.path.join(target_location, 'Root'))
         os.mkdir(os.path.join(target_location, 'Matching'))
         os.mkdir(os.path.join(target_location, 'Construction'))
@@ -116,6 +124,11 @@ def setup_folder_structure():
         os.mkdir(os.path.join(target_location, 'Role'))
         os.mkdir(os.path.join(target_location, 'TWA'))
         os.mkdir(os.path.join(target_location, 'Asset'))
+    
+    # Copy images into static folder
+    files = os.listdir(images_location)
+    for file in files:
+        shutil.copy2(os.path.join(images_location, file), os.path.join(target_location, 'Images'))
 
 
 def create_info_file(file, string):
@@ -846,6 +859,7 @@ def create_report():
 
 def generate_all_patterns(user_input):
     set_csv_location(user_input)
+    set_images_location(user_input)
 
     if not check_configuration():
         return
