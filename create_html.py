@@ -83,7 +83,7 @@ def see_root(uri):
 
     return render_template('pattern/root.html', uri=uri, matchings=matchings, descriptions=descriptions, labels=labels,
                            package=packages[uri], search_index=json.dumps(search_index), model_version=model_version,
-                           prev_uri=proceeded_by['root'][uri], next_uri=followed_by['root'][uri])
+                           prev_uri=proceeded_by['root'][uri], next_uri=followed_by['root'][uri], active_page='root')
 
 
 @app.route('/matching/<uri>/')
@@ -108,7 +108,7 @@ def see_matching(uri):
     return render_template('pattern/matching.html', uri=uri, root=root, constructions=constructions, threats=threats,
                            descriptions=descriptions, labels=labels, package=packages[uri],
                            search_index=json.dumps(search_index), model_version=model_version,
-                           prev_uri=proceeded_by['matching'][uri], next_uri=followed_by['matching'][uri])
+                           prev_uri=proceeded_by['matching'][uri], next_uri=followed_by['matching'][uri], active_page='matching')
 
 
 @app.route('/construction/<uri>/')
@@ -127,7 +127,7 @@ def see_construction(uri):
                            descriptions=descriptions, labels=labels, package=packages[uri],
                            search_index=json.dumps(search_index), model_version=model_version,
                            prev_pa=proceeded_by['const_pattern'][uri], next_pa=followed_by['const_pattern'][uri],
-                           prev_pr=proceeded_by['const_priority'][uri], next_pr=followed_by['const_priority'][uri])
+                           prev_pr=proceeded_by['const_priority'][uri], next_pr=followed_by['const_priority'][uri], active_page='construction')
 
 
 @app.route('/threat/<uri>/')
@@ -165,7 +165,7 @@ def see_threat(uri):
                            triggers=triggers, csg_triggers=csg_triggers, misbehaviour=misbehaviour, roles=roles,
                            csgs=csgs, descriptions=descriptions, labels=labels, package=packages[uri],
                            search_index=json.dumps(search_index), model_version=model_version,
-                           prev_uri=proceeded_by['threat'][uri], next_uri=followed_by['threat'][uri])
+                           prev_uri=proceeded_by['threat'][uri], next_uri=followed_by['threat'][uri], active_page='threat')
 
 
 @app.route('/misbehaviour/<uri>/')
@@ -188,7 +188,7 @@ def see_misbehaviour(uri):
     return render_template('pattern/misbehaviour.html', uri=uri, descriptions=descriptions, labels=labels,
                            package=packages[uri], roles=roles, threats=threats, search_index=json.dumps(search_index),
                            model_version=model_version, prev_uri=proceeded_by['misbehaviour'][uri],
-                           next_uri=followed_by['misbehaviour'][uri])
+                           next_uri=followed_by['misbehaviour'][uri], active_page='misbehaviour')
 
 
 @app.route('/csg/<uri>/')
@@ -223,7 +223,7 @@ def see_csg(uri):
                            controls=controls, roles=roles, optionals=optionals, descriptions=descriptions,
                            labels=labels, package=packages[uri], search_index=json.dumps(search_index),
                            model_version=model_version, prev_uri=proceeded_by['csg'][uri],
-                           next_uri=followed_by['csg'][uri])
+                           next_uri=followed_by['csg'][uri], active_page='csg')
 
 
 @app.route('/control/<uri>/')
@@ -244,7 +244,7 @@ def see_control(uri):
     return render_template('pattern/control.html', uri=uri, descriptions=descriptions, labels=labels, csgs=csgs,
                            optionals=optionals, package=packages[uri], search_index=json.dumps(search_index),
                            model_version=model_version, prev_uri=proceeded_by['controls'][uri],
-                           next_uri=followed_by['controls'][uri])
+                           next_uri=followed_by['controls'][uri], active_page='control')
 
 
 @app.route('/role/<uri>/')
@@ -267,7 +267,7 @@ def see_role(uri):
     return render_template('pattern/role.html', uri=uri, descriptions=descriptions, labels=labels, controls=controls,
                            misbehaviour=misbehaviour, search_index=json.dumps(search_index), package=packages[uri],
                            model_version=model_version, prev_uri=proceeded_by['role'][uri],
-                           next_uri=followed_by['role'][uri])
+                           next_uri=followed_by['role'][uri], active_page='role')
 
 
 def get_from_package(df, package):
@@ -302,7 +302,7 @@ def see_package(uri):
     return render_template('pattern/package.html', uri=uri, root=root, matching=matching, construction=construction,
                            threats=threats, misbehaviour=misbehaviour, csg=csg, control=control, role=role, twa=twa,
                            asset=asset , descriptions=descriptions, labels=labels, search_index=json.dumps(search_index),
-                           model_version=model_version)
+                           model_version=model_version, active_page='package')
 
 @app.route('/twa/<uri>/')
 def see_twa(uri):
@@ -326,7 +326,7 @@ def see_twa(uri):
     return render_template('pattern/twa.html', uri=uri, descriptions=descriptions, labels=labels,
                            package=packages[uri], misbehaviour=misbehaviour, assets=assets, threats=threats, search_index=json.dumps(search_index),
                            model_version=model_version, prev_uri=proceeded_by['twa'][uri],
-                           next_uri=followed_by['twa'][uri])
+                           next_uri=followed_by['twa'][uri], active_page='twa')
 
 @app.route('/asset/<uri>/')
 def see_asset(uri):
@@ -343,31 +343,31 @@ def see_asset(uri):
     return render_template('pattern/asset.html', uri=uri, descriptions=descriptions, labels=labels,
                            package=packages[uri], icon=icon, search_index=json.dumps(search_index),
                            model_version=model_version, prev_uri=proceeded_by['asset'][uri],
-                           next_uri=followed_by['asset'][uri])
+                           next_uri=followed_by['asset'][uri], active_page='asset')
 
 @app.route('/')
 def from_start():
-    return render_template('home.html', search_index=json.dumps(search_index), model_version=model_version)
+    return render_template('home.html', search_index=json.dumps(search_index), model_version=model_version, active_page='home')
 
 
 @app.route('/root/list/')
 def root_list():
     return render_template('navigation/root_list.html', categories=categories['root'], descriptions=descriptions,
-                           labels=labels, search_index=json.dumps(search_index), model_version=model_version)
+                           labels=labels, search_index=json.dumps(search_index), model_version=model_version, active_page='root')
 
 
 @app.route('/matching/list/')
 def matching_list():
     return render_template('navigation/matching_list.html', categories=categories['matching'],
                            descriptions=descriptions, labels=labels, search_index=json.dumps(search_index),
-                           model_version=model_version)
+                           model_version=model_version, active_page='matching')
 
 
 @app.route('/construction/list/')
 def construction_list():
     return render_template('navigation/construction_list.html', categories=categories['const_pattern'],
                            cons_pri=construction_priorities, descriptions=descriptions, labels=labels,
-                           search_index=json.dumps(search_index), model_version=model_version)
+                           search_index=json.dumps(search_index), model_version=model_version, active_page='construction')
 
 
 @app.route('/construction/priority/')
@@ -405,39 +405,39 @@ def construction_priority():
 
     return render_template('navigation/construction_by_priority.html', priorities=priorities,
                            cons_pri=construction_priorities, descriptions=descriptions, labels=labels,
-                           search_index=json.dumps(search_index), model_version=model_version)
+                           search_index=json.dumps(search_index), model_version=model_version, active_page='construction')
 
 
 @app.route('/threat/list/')
 def threat_list():
     return render_template('navigation/threat_list.html', categories=categories['threat'],
                            descriptions=descriptions, labels=labels, search_index=json.dumps(search_index),
-                           model_version=model_version)
+                           model_version=model_version, active_page='threat')
 
 
 @app.route('/misbehaviour/list/')
 def misbehaviour_list():
     return render_template('navigation/misbehaviour_list.html', categories=categories['misbehaviour'],
                            descriptions=descriptions, labels=labels, search_index=json.dumps(search_index),
-                           model_version=model_version)
+                           model_version=model_version, active_page='misbehaviour')
 
 
 @app.route('/csg/list/')
 def csg_list():
     return render_template('navigation/csg_list.html', categories=categories['csg'], descriptions=descriptions,
-                           labels=labels, search_index=json.dumps(search_index), model_version=model_version)
+                           labels=labels, search_index=json.dumps(search_index), model_version=model_version, active_page='csg')
 
 
 @app.route('/control/list/')
 def control_list():
     return render_template('navigation/control_list.html', categories=categories['controls'], descriptions=descriptions,
-                           labels=labels, search_index=json.dumps(search_index), model_version=model_version)
+                           labels=labels, search_index=json.dumps(search_index), model_version=model_version, active_page='control')
 
 
 @app.route('/role/list/')
 def role_list():
     return render_template('navigation/role_list.html', categories=categories['role'], descriptions=descriptions,
-                           labels=labels, search_index=json.dumps(search_index), model_version=model_version)
+                           labels=labels, search_index=json.dumps(search_index), model_version=model_version, active_page='role')
 
 
 @app.route('/package/list/')
@@ -449,19 +449,19 @@ def package_list():
             all_packages.append(row['URI'][8:])
 
     return render_template('navigation/package_list.html', packages=all_packages, descriptions=descriptions,
-                           labels=labels, search_index=json.dumps(search_index), model_version=model_version)
+                           labels=labels, search_index=json.dumps(search_index), model_version=model_version, active_page='package')
 
 @app.route('/twa/list/')
 def twa_list():
     return render_template('navigation/twa_list.html', categories=categories['twa'],
                            descriptions=descriptions, labels=labels, search_index=json.dumps(search_index),
-                           model_version=model_version)
+                           model_version=model_version, active_page='twa')
 
 @app.route('/asset/list/')
 def asset_list():
     return render_template('navigation/asset_list.html', categories=categories['asset'],
                            descriptions=descriptions, labels=labels, search_index=json.dumps(search_index),
-                           model_version=model_version)
+                           model_version=model_version, active_page='asset')
 
 def prepare_css():
     # Puts a copy of the css into the static file

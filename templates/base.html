@@ -17,16 +17,16 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="..\..\index.html">Home</a>
+                    <a class="nav-link {{'active' if active_page == 'home' }}" aria-current="page" href="..\..\index.html">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="..\..\root\list\index.html">Root</a>
+                    <a class="nav-link {{'active' if active_page == 'root' }}" href="..\..\root\list\index.html">Root</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="..\..\matching\list\index.html">Matching</a>
+                    <a class="nav-link {{'active' if active_page == 'matching' }}" href="..\..\matching\list\index.html">Matching</a>
                 </li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="..\..\construction\list\index.html" id="navbarDropdown"
+                    <a class="nav-link dropdown-toggle {{'active' if active_page == 'construction' }}" href="..\..\construction\list\index.html" id="navbarDropdown"
                        role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         Construction
                     </a>
@@ -36,28 +36,28 @@
                     </ul>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="..\..\threat\list\index.html">Threat</a>
+                    <a class="nav-link {{'active' if active_page == 'threat' }}" href="..\..\threat\list\index.html">Threat</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="..\..\misbehaviour\list\index.html">Misbehaviour</a>
+                    <a class="nav-link {{'active' if active_page == 'misbehaviour' }}" href="..\..\misbehaviour\list\index.html">Misbehaviour</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="..\..\csg\list\index.html">Control Strategy</a>
+                    <a class="nav-link {{'active' if active_page == 'csg' }}" href="..\..\csg\list\index.html">Control Strategy</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="..\..\control\list\index.html">Control</a>
+                    <a class="nav-link {{'active' if active_page == 'control' }}" href="..\..\control\list\index.html">Control</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="..\..\role\list\index.html">Role</a>
+                    <a class="nav-link {{'active' if active_page == 'role' }}" href="..\..\role\list\index.html">Role</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="..\..\asset\list\index.html">Asset</a>
+                    <a class="nav-link {{'active' if active_page == 'asset' }}" href="..\..\asset\list\index.html">Asset</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="..\..\twa\list\index.html">Trustworthiness Attribute</a>
+                    <a class="nav-link {{'active' if active_page == 'twa' }}" href="..\..\twa\list\index.html">Trustworthiness Attribute</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="..\..\package\list\index.html">Package</a>
+                    <a class="nav-link {{'active' if active_page == 'package' }}" href="..\..\package\list\index.html">Package</a>
                 </li>
             </ul>
             <input class="search-box" type="search" value="" id="search_box" placeholder="  Search">
