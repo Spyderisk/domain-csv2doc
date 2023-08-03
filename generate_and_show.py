@@ -35,7 +35,7 @@ def check_inputs(user_input):
         print('Program requires the directory of the csvs as input.')
         return False
 
-    csv_directory = user_input[1]
+    csv_directory = os.path.join(user_input[1], 'csv')
 
     # Fail if csvs directory doesn't exist
     if not os.path.isdir(csv_directory):
@@ -58,9 +58,9 @@ def run_all(user_inputs):
         exit()
 
     # Generate Patterns & graphs
-    generate_all_patterns(csvs_location)
+    generate_all_patterns(user_inputs[1])
     # Create static html
-    freeze_html(csvs_location)
+    freeze_html(user_inputs[1])
 
 
 if __name__ == '__main__':
