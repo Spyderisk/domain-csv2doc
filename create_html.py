@@ -301,7 +301,7 @@ def see_package(uri):
 
     return render_template('pattern/package.html', uri=uri, root=root, matching=matching, construction=construction,
                            threats=threats, misbehaviour=misbehaviour, csg=csg, control=control, role=role, twa=twa,
-                           asset=asset , descriptions=descriptions, labels=labels, search_index=json.dumps(search_index),
+                           asset=asset, descriptions=descriptions, labels=labels, search_index=json.dumps(search_index),
                            model_version=model_version, active_page='package')
 
 @app.route('/twa/<uri>/')
