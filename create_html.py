@@ -175,14 +175,14 @@ def see_misbehaviour(uri):
     # Get lines from file
     lines = get_lines(file_path, False)
 
-    roles = []
+    assets = []
     threats = []
     twa = None
 
     # Get list of threats and roles
     for line in lines[0:-1]:
-        if line.startswith('Role:'):
-            roles.append(line.split(':')[1])
+        if line.startswith('Asset:'):
+            assets.append(line.split(':')[1])
         elif line.startswith('Threat:'):
             threats.append(line.split(':')[1])
         elif line.startswith('TWA:'):
@@ -190,7 +190,7 @@ def see_misbehaviour(uri):
 
 
     return render_template('pattern/misbehaviour.html', uri=uri, descriptions=descriptions, labels=labels,
-                           package=packages[uri], roles=roles, threats=threats, twa=twa, search_index=json.dumps(search_index),
+                           package=packages[uri], assets=assets, threats=threats, twa=twa, search_index=json.dumps(search_index),
                            model_version=model_version, prev_uri=proceeded_by['misbehaviour'][uri],
                            next_uri=followed_by['misbehaviour'][uri], active_page='misbehaviour')
 

@@ -166,8 +166,8 @@ def extract_role_info():
 def extract_misbehaviour_info():
     # Frame of all misbehaviour
     mbf = pd.read_csv(os.path.join(csvs_location, 'Misbehaviour.csv'))
-    misbehaviour_sets = pd.read_csv(os.path.join(csvs_location, 'MisbehaviourSet.csv'))
     twis = pd.read_csv(os.path.join(csvs_location, 'TWIS.csv'))
+    misbehaviour_locations = pd.read_csv(os.path.join(csvs_location, 'MisbehaviourLocations.csv'))
 
     # If example line present, remove
     if 'domain#000000' in mbf['URI'].tolist():
@@ -186,19 +186,17 @@ def extract_misbehaviour_info():
             blank_list.append('Misbehaviour ' + row['URI'])
 
         misbehaviours[row['URI']] = []
-
-    # Add misbehaviour set to each misbehaviour
-    for index, row in misbehaviour_sets.iterrows():        
-        # Add role to misbehaviour
-        misbehaviours[row['hasMisbehaviour']].append('Role:' + row['locatedAt'][7:] + '\n')
-        # Add misbehaviour to role
-        add_to_info_file('Role', row['locatedAt'][7:], 'Misbehaviour:' + row['hasMisbehaviour'][7:] + '\n')
     
     # Add twa to each misbehaviour if they have one
     for index, row in twis.iterrows():
         #TODO: remove this if statement (makes the code work with old version of domain model)
         if row['affectedBy'] in misbehaviours:
             misbehaviours[row['affectedBy']].append('TWA:' + row['affects'][7:] + '\n')
+
+    # Add misbehaviour set to each misbehaviour
+    for index, row in misbehaviour_locations.iterrows():        
+        # Add role to misbehaviour
+        misbehaviours[row['URI']].append('Asset:' + row['metaLocatedAt'][7:] + '\n')
 
     # Create info files
     for item in misbehaviours:

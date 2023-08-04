@@ -56,23 +56,23 @@
 
     <div class="accordion" id="accordionPanelsStayOpen2">
         <div class="accordion-item">
-            <h2 class="accordion-header" id="panelsStayOpen-heading-role">
-                <button  class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapse-role" aria-expanded="true" aria-controls="panelsStayOpen-collapse-role">
-                    Roles ({{roles|length}})
+            <h2 class="accordion-header" id="panelsStayOpen-heading-asset">
+                <button  class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapse-asset" aria-expanded="true" aria-controls="panelsStayOpen-collapse-asset">
+                    Assets ({{assets|length}})
                 </button>
             </h2>
 
-            <div id="panelsStayOpen-collapse-role" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-heading-role">
+            <div id="panelsStayOpen-collapse-asset" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-heading-asset">
                 <div class="accordion-body">
                     <table style="max-width: 90%;">
-                        {% for x in roles %}
+                        {% for x in assets %}
                             <tr class="description-table">
-                                <td class="description-title"><p><a href="../../role/{{x}}/index.html">{{x}}</a></p></td>
+                                <td class="description-title"><p><a href="../../asset/{{x}}/index.html">{{x}}</a></p></td>
                                 <td><p>{{descriptions[x]|safe}}</p></td>
                             </tr>
                         {% endfor %}
                     </table>
-                    {% if roles|length == 0 %}
+                    {% if assets|length == 0 %}
                         <p>&nbsp &nbsp &nbsp &nbsp (empty)</p>
                     {% endif %}
                 </div>
