@@ -13,6 +13,9 @@
         <p><a href="../{{prev_uri}}/index.html">< prev</a></p>
     {% endif %}
     <p>Description: {{descriptions[uri]|safe}}</p>
+    {% if twa != None %}
+        <p>This misbehaviour affects the trustworthiness attribute <a href="../../twa/{{twa}}/index.html">{{twa}}</a></p>
+    {% endif %}
 
     <div class="accordion" id="accordionPanelsStayOpen">
         <div class="accordion-item">
