@@ -17,43 +17,6 @@
         <p>This misbehaviour affects the trustworthiness attribute <a href="../../twa/{{twa}}/index.html">{{twa}}</a></p>
     {% endif %}
 
-    <div class="accordion" id="accordionPanelsStayOpen">
-        <div class="accordion-item">
-            <h2 class="accordion-header" id="panelsStayOpen-heading-threats">
-                <button  class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapse-threats" aria-expanded="true" aria-controls="panelsStayOpen-collapse-threats">
-                    Threats ({{threats|length}})
-                </button>
-            </h2>
-
-            <div id="panelsStayOpen-collapse-threats" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-heading-threats">
-                <div class="accordion-body">
-
-                    <div class="row">
-                        {% for x in threats %}
-                            <div class="col-xxl-2 col-lg-3 col-md-4 col-sm-6">
-                                <a href="../../threat/{{x}}/index.html" class="bland-link">
-                                    <div class="card threat-card">
-                                        <div class="card-image-box">
-                                            <img src="../../static/Threat/{{x}}.svg" class="card-img-top" alt="{{uri}}" title="{{uri}}">
-                                        </div>
-                                        <div class="card-body">
-                                            <h5 class="card-title">{{x}}</h5>
-                                            <p class="card-text">{{descriptions[x]|safe}}</p>
-                                        </div>
-                                    </div>
-                                </a>
-                            </div>
-                        {% endfor %}
-                        {% if threats|length == 0 %}
-                            <p>&nbsp &nbsp &nbsp &nbsp (empty)</p>
-                        {% endif %}
-                    </div>
-
-                </div>
-            </div>
-        </div>
-    </div>
-
     <div class="accordion" id="accordionPanelsStayOpen2">
         <div class="accordion-item">
             <h2 class="accordion-header" id="panelsStayOpen-heading-asset">
@@ -75,6 +38,80 @@
                     {% if assets|length == 0 %}
                         <p>&nbsp &nbsp &nbsp &nbsp (empty)</p>
                     {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="accordion" id="accordionPanelsStayOpen">
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="panelsStayOpen-heading-causing-threats">
+                <button  class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapse-causing-threats" aria-expanded="true" aria-controls="panelsStayOpen-collapse-causing-threats">
+                    Threats causing this misbehaviour ({{causing_threats|length}})
+                </button>
+            </h2>
+
+            <div id="panelsStayOpen-collapse-causing-threats" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-heading-causing-threats">
+                <div class="accordion-body">
+
+                    <div class="row">
+                        {% for x in causing_threats %}
+                            <div class="col-xxl-2 col-lg-3 col-md-4 col-sm-6">
+                                <a href="../../threat/{{x}}/index.html" class="bland-link">
+                                    <div class="card threat-card">
+                                        <div class="card-image-box">
+                                            <img src="../../static/Threat/{{x}}.svg" class="card-img-top" alt="{{uri}}" title="{{uri}}">
+                                        </div>
+                                        <div class="card-body">
+                                            <h5 class="card-title">{{x}}</h5>
+                                            <p class="card-text">{{descriptions[x]|safe}}</p>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        {% endfor %}
+                        {% if causing_threats|length == 0 %}
+                            <p>&nbsp &nbsp &nbsp &nbsp (empty)</p>
+                        {% endif %}
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="accordion" id="accordionPanelsStayOpen3">
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="panelsStayOpen-heading-threats-caused">
+                <button  class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapse-threats-caused" aria-expanded="true" aria-controls="panelsStayOpen-collapse-threats-caused">
+                    Threats caused by this misbehaviour ({{threats_caused|length}})
+                </button>
+            </h2>
+
+            <div id="panelsStayOpen-collapse-threats-caused" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-heading-threats-caused">
+                <div class="accordion-body">
+
+                    <div class="row">
+                        {% for x in threats_caused %}
+                            <div class="col-xxl-2 col-lg-3 col-md-4 col-sm-6">
+                                <a href="../../threat/{{x}}/index.html" class="bland-link">
+                                    <div class="card threat-card">
+                                        <div class="card-image-box">
+                                            <img src="../../static/Threat/{{x}}.svg" class="card-img-top" alt="{{uri}}" title="{{uri}}">
+                                        </div>
+                                        <div class="card-body">
+                                            <h5 class="card-title">{{x}}</h5>
+                                            <p class="card-text">{{descriptions[x]|safe}}</p>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        {% endfor %}
+                        {% if threats_caused|length == 0 %}
+                            <p>&nbsp &nbsp &nbsp &nbsp (empty)</p>
+                        {% endif %}
+                    </div>
+
                 </div>
             </div>
         </div>

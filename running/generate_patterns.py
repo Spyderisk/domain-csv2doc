@@ -168,6 +168,7 @@ def extract_misbehaviour_info():
     mbf = pd.read_csv(os.path.join(csvs_location, 'Misbehaviour.csv'))
     twis = pd.read_csv(os.path.join(csvs_location, 'TWIS.csv'))
     misbehaviour_locations = pd.read_csv(os.path.join(csvs_location, 'MisbehaviourLocations.csv'))
+    threat_sec = pd.read_csv(os.path.join(csvs_location, 'ThreatSEC.csv'))
 
     # If example line present, remove
     if 'domain#000000' in mbf['URI'].tolist():
@@ -194,9 +195,16 @@ def extract_misbehaviour_info():
             misbehaviours[row['affectedBy']].append('TWA:' + row['affects'][7:] + '\n')
 
     # Add misbehaviour set to each misbehaviour
-    for index, row in misbehaviour_locations.iterrows():        
-        # Add role to misbehaviour
+    for index, row in misbehaviour_locations.iterrows():
+        # Add asset to misbehaviour
         misbehaviours[row['URI']].append('Asset:' + row['metaLocatedAt'][7:] + '\n')
+    
+    # Add caused threats to misbehaviour
+    for index, row in threat_sec.iterrows():
+        misbehaviour = 'domain#' + row['hasSecondaryEffectCondition'].split('-')[1]
+        # Add threat to misbehaviour
+        misbehaviours[misbehaviour].append('ThreatCaused:' + row['URI'][7:] + '\n')
+
 
     # Create info files
     for item in misbehaviours:
@@ -726,7 +734,7 @@ def generate_threat_patterns():
                 mis_n(graph, misbehaviour_name, i)
                 mis_e(graph, related_misbehaviour['locatedAt'][ind], misbehaviour_name + '%$#' + str(i))
                 pattern_info.append('Misbehaviour_Set:' + related_misbehaviour['hasMisbehaviour'][ind][7:] + '@' + related_misbehaviour['locatedAt'][ind][7:] + '\n')
-                add_to_info_file('Misbehaviour', misbehaviour_name[7:], 'Threat:' + uri[7:] + '\n')
+                add_to_info_file('Misbehaviour', misbehaviour_name[7:], 'CausingThreat:' + uri[7:] + '\n')
                 i = i + 1
 
             # Add Entry Points
