@@ -179,6 +179,7 @@ def see_misbehaviour(uri):
     causing_threats = []
     threats_caused = []
     twa = None
+    twaThreats = []
 
     # Get list of threats and roles
     for line in lines[0:-1]:
@@ -190,10 +191,12 @@ def see_misbehaviour(uri):
             threats_caused.append(line.split(':')[1])
         elif line.startswith('TWA:'):
             twa = line.split(':')[1]
-
+        elif line.startswith('twaThreat:'):
+            twaThreats.append(line.split(':')[1])
 
     return render_template('pattern/misbehaviour.html', uri=uri, descriptions=descriptions, labels=labels,
-                           package=packages[uri], assets=assets, causing_threats=causing_threats, threats_caused=threats_caused, twa=twa, search_index=json.dumps(search_index),
+                           package=packages[uri], assets=assets, causing_threats=causing_threats, threats_caused=threats_caused, 
+                           twa=twa, twaThreats=twaThreats, search_index=json.dumps(search_index),
                            model_version=model_version, prev_uri=proceeded_by['misbehaviour'][uri],
                            next_uri=followed_by['misbehaviour'][uri], active_page='misbehaviour')
 

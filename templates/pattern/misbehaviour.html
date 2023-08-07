@@ -117,4 +117,43 @@
         </div>
     </div>
 
+    {% if twa != None %}
+        <div class="accordion" id="accordionPanelsStayOpen4">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="panelsStayOpen-heading-twaThreat">
+                    <button  class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapse-twaThreat" aria-expanded="true" aria-controls="panelsStayOpen-collapse-twaThreat">
+                        Threats caused by affected trustworthiness attribute ({{twaThreats|length}})
+                    </button>
+                </h2>
+
+                <div id="panelsStayOpen-collapse-twaThreat" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-heading-twaThreat">
+                    <div class="accordion-body">
+
+                        <div class="row">
+                            {% for x in twaThreats %}
+                                <div class="col-xxl-2 col-lg-3 col-md-4 col-sm-6">
+                                    <a href="../../threat/{{x}}/index.html" class="bland-link">
+                                        <div class="card threat-card">
+                                            <div class="card-image-box">
+                                                <img src="../../static/Threat/{{x}}.svg" class="card-img-top" alt="{{uri}}" title="{{uri}}">
+                                            </div>
+                                            <div class="card-body">
+                                                <h5 class="card-title">{{x}}</h5>
+                                                <p class="card-text">{{descriptions[x]|safe}}</p>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            {% endfor %}
+                            {% if twaThreats|length == 0 %}
+                                <p>&nbsp &nbsp &nbsp &nbsp (empty)</p>
+                            {% endif %}
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
 {% endblock %}

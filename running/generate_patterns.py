@@ -169,6 +169,8 @@ def extract_misbehaviour_info():
     twis = pd.read_csv(os.path.join(csvs_location, 'TWIS.csv'))
     misbehaviour_locations = pd.read_csv(os.path.join(csvs_location, 'MisbehaviourLocations.csv'))
     threat_sec = pd.read_csv(os.path.join(csvs_location, 'ThreatSEC.csv'))
+    twas = pd.read_csv(os.path.join(csvs_location, 'TWAS.csv'))
+    threat_entry_points = pd.read_csv(os.path.join(csvs_location, 'ThreatEntryPoints.csv'))
 
     # If example line present, remove
     if 'domain#000000' in mbf['URI'].tolist():
@@ -193,6 +195,19 @@ def extract_misbehaviour_info():
         #TODO: remove this if statement (makes the code work with old version of domain model)
         if row['affectedBy'] in misbehaviours:
             misbehaviours[row['affectedBy']].append('TWA:' + row['affects'][7:] + '\n')
+    
+    # Create dataframe connecting misbehaviours to threats via associated trustworthiness attribute
+    twas = twas.drop(columns=['locatedAt', 'package'])
+    twaThreats = pd.merge(threat_entry_points, twas, left_on='hasEntryPoint', right_on='URI')
+    twaThreats = twaThreats.drop(columns=['hasEntryPoint', 'URI_y'])
+    twaMisbehaviour = twis.drop(columns=['URI', 'label'])
+    twaThreats = pd.merge(twaThreats, twaMisbehaviour, left_on='hasTrustworthinessAttribute', right_on='affects')
+    twaThreats = twaThreats.drop(columns=['affects', 'hasTrustworthinessAttribute'])
+    twaThreats = twaThreats.drop_duplicates()
+    twaThreats = twaThreats.rename(columns={"URI_x": "threat", "affectedBy": "misbehaviour"})
+    # Add threats caused by twa
+    for index, row in twaThreats.iterrows():
+        misbehaviours[row['misbehaviour']].append('twaThreat:' + row['threat'][7:] + '\n')
 
     # Add misbehaviour set to each misbehaviour
     for index, row in misbehaviour_locations.iterrows():
@@ -204,7 +219,6 @@ def extract_misbehaviour_info():
         misbehaviour = 'domain#' + row['hasSecondaryEffectCondition'].split('-')[1]
         # Add threat to misbehaviour
         misbehaviours[misbehaviour].append('ThreatCaused:' + row['URI'][7:] + '\n')
-
 
     # Create info files
     for item in misbehaviours:
