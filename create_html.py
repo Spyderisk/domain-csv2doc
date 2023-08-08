@@ -250,6 +250,7 @@ def see_control(uri):
 
     for line in lines[0:-1]:
         if line.startswith('ControlStrategy:'):
+            line = line.split(':')[1]
             csgs.append(line.rsplit('-', 1)[0])
             optionals.append(line.rsplit('-', 1)[1] == 'True')
         if line.startswith('Asset:'):
