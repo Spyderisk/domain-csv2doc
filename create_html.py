@@ -246,13 +246,17 @@ def see_control(uri):
     # Get control strategies
     csgs = []
     optionals = []
+    assets = []
 
     for line in lines[0:-1]:
-        csgs.append(line.rsplit('-', 1)[0])
-        optionals.append(line.rsplit('-', 1)[1] == 'True')
+        if line.startswith('ControlStrategy:'):
+            csgs.append(line.rsplit('-', 1)[0])
+            optionals.append(line.rsplit('-', 1)[1] == 'True')
+        if line.startswith('Asset:'):
+            assets.append(line.split(':')[1])
 
     return render_template('pattern/control.html', uri=uri, descriptions=descriptions, labels=labels, csgs=csgs,
-                           optionals=optionals, package=packages[uri], search_index=json.dumps(search_index),
+                           optionals=optionals, package=packages[uri], assets=assets, search_index=json.dumps(search_index),
                            model_version=model_version, prev_uri=proceeded_by['controls'][uri],
                            next_uri=followed_by['controls'][uri], active_page='control')
 
