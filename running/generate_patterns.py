@@ -229,10 +229,13 @@ def extract_controls_info():
     # Frame of all controls
     csf = pd.read_csv(os.path.join(csvs_location, 'Control.csv'))
     control_sets = pd.read_csv(os.path.join(csvs_location, 'ControlSet.csv'))
+    control_locations = pd.read_csv(os.path.join(csvs_location, 'ControlLocations.csv'))
 
     # If example line present, remove
     if 'domain#000000' in csf['URI'].tolist():
         csf.drop(0, axis=0, inplace=True)
+
+    controls = {}
 
     # Create info file for each control
     for index, row in csf.iterrows():
@@ -242,12 +245,20 @@ def extract_controls_info():
             unassigned_list.append('Control ' + row['URI'])
         elif package != package:
             blank_list.append('Control ' + row['URI'])
+        
+        controls[row['URI']] = []
 
-        create_info_file(os.path.join(target_location, 'Controls', row['URI'][7:]), '')
+    # # Add assets to controls
+    for index, row in control_locations.iterrows():
+        controls[row['URI']].append('Asset:' + row['metaLocatedAt'][7:] + '\n')
 
     # Add controls to each role
     for index, row in control_sets.iterrows():
         add_to_info_file('Role', row['locatedAt'][7:], 'Control:' + row['hasControl'][7:] + '\n')
+    
+    # Create info files
+    for item in controls:
+        create_info_file(os.path.join(target_location, 'Controls', item[7:]), ''.join(controls[item]))
 
 
 def extract_control_strategy_info():
@@ -303,7 +314,7 @@ def extract_control_strategy_info():
             strategy_info.append('ControlSet:' + related_controls['hasControlSet'][ind][7:] + optional + '\n')
             # Add control strategy to control's info
             add_to_info_file('Controls', related_controls['hasControlSet'][ind][10:].split('-')[0],
-                             row['URI'][7:] + optional + '\n')
+                             "ControlStrategy:" + row['URI'][7:] + optional + '\n')
 
         # Add list of triggered threats
         for ind in related_triggers.index:
