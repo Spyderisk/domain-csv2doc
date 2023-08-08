@@ -166,7 +166,11 @@ def extract_role_info():
 def extract_misbehaviour_info():
     # Frame of all misbehaviour
     mbf = pd.read_csv(os.path.join(csvs_location, 'Misbehaviour.csv'))
-    misbehaviour_sets = pd.read_csv(os.path.join(csvs_location, 'MisbehaviourSet.csv'))
+    twis = pd.read_csv(os.path.join(csvs_location, 'TWIS.csv'))
+    misbehaviour_locations = pd.read_csv(os.path.join(csvs_location, 'MisbehaviourLocations.csv'))
+    threat_sec = pd.read_csv(os.path.join(csvs_location, 'ThreatSEC.csv'))
+    twas = pd.read_csv(os.path.join(csvs_location, 'TWAS.csv'))
+    threat_entry_points = pd.read_csv(os.path.join(csvs_location, 'ThreatEntryPoints.csv'))
 
     # If example line present, remove
     if 'domain#000000' in mbf['URI'].tolist():
@@ -185,13 +189,36 @@ def extract_misbehaviour_info():
             blank_list.append('Misbehaviour ' + row['URI'])
 
         misbehaviours[row['URI']] = []
+    
+    # Add twa to each misbehaviour if they have one
+    for index, row in twis.iterrows():
+        #TODO: remove this if statement (makes the code work with old version of domain model)
+        if row['affectedBy'] in misbehaviours:
+            misbehaviours[row['affectedBy']].append('TWA:' + row['affects'][7:] + '\n')
+    
+    # Create dataframe connecting misbehaviours to threats via associated trustworthiness attribute
+    twas = twas.drop(columns=['locatedAt', 'package'])
+    twaThreats = pd.merge(threat_entry_points, twas, left_on='hasEntryPoint', right_on='URI')
+    twaThreats = twaThreats.drop(columns=['hasEntryPoint', 'URI_y'])
+    twaMisbehaviour = twis.drop(columns=['URI', 'label'])
+    twaThreats = pd.merge(twaThreats, twaMisbehaviour, left_on='hasTrustworthinessAttribute', right_on='affects')
+    twaThreats = twaThreats.drop(columns=['affects', 'hasTrustworthinessAttribute'])
+    twaThreats = twaThreats.drop_duplicates()
+    twaThreats = twaThreats.rename(columns={"URI_x": "threat", "affectedBy": "misbehaviour"})
+    # Add threats caused by twa
+    for index, row in twaThreats.iterrows():
+        misbehaviours[row['misbehaviour']].append('twaThreat:' + row['threat'][7:] + '\n')
 
     # Add misbehaviour set to each misbehaviour
-    for index, row in misbehaviour_sets.iterrows():
-        # Add role to misbehaviour
-        misbehaviours[row['hasMisbehaviour']].append('Role:' + row['locatedAt'][7:] + '\n')
-        # Add misbehaviour to role
-        add_to_info_file('Role', row['locatedAt'][7:], 'Misbehaviour:' + row['hasMisbehaviour'][7:] + '\n')
+    for index, row in misbehaviour_locations.iterrows():
+        # Add asset to misbehaviour
+        misbehaviours[row['URI']].append('Asset:' + row['metaLocatedAt'][7:] + '\n')
+    
+    # Add caused threats to misbehaviour
+    for index, row in threat_sec.iterrows():
+        misbehaviour = 'domain#' + row['hasSecondaryEffectCondition'].split('-')[1]
+        # Add threat to misbehaviour
+        misbehaviours[misbehaviour].append('ThreatCaused:' + row['URI'][7:] + '\n')
 
     # Create info files
     for item in misbehaviours:
@@ -721,7 +748,7 @@ def generate_threat_patterns():
                 mis_n(graph, misbehaviour_name, i)
                 mis_e(graph, related_misbehaviour['locatedAt'][ind], misbehaviour_name + '%$#' + str(i))
                 pattern_info.append('Misbehaviour_Set:' + related_misbehaviour['hasMisbehaviour'][ind][7:] + '@' + related_misbehaviour['locatedAt'][ind][7:] + '\n')
-                add_to_info_file('Misbehaviour', misbehaviour_name[7:], 'Threat:' + uri[7:] + '\n')
+                add_to_info_file('Misbehaviour', misbehaviour_name[7:], 'CausingThreat:' + uri[7:] + '\n')
                 i = i + 1
 
             # Add Entry Points
