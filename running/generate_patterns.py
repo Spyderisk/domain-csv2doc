@@ -581,8 +581,6 @@ def generate_initial_matching_patterns():
 def generate_final_matching_patterns():
     # Get frame of all matching patterns
     mpf = pd.read_csv(os.path.join(csvs_location, 'MatchingPattern.csv'))
-    rpf = pd.read_csv(os.path.join(csvs_location, 'RootPattern.csv'))
-    df = pd.merge(mpf, rpf, left_on='hasRootPattern', right_on='URI')
 
     # Target folder
     target = os.path.join(target_location, 'Matching')
@@ -594,7 +592,7 @@ def generate_final_matching_patterns():
     # Create all
     for uri in matching_graphs_final:
         # Determine package
-        package = df.loc[df['URI_x'] == uri].iloc[0]['package']
+        package = mpf.loc[mpf['URI'] == uri].iloc[0]['package']
 
         # Create graph & select frames
         graph = matching_graphs_final[uri]
@@ -791,7 +789,7 @@ def extract_additional_control_strategy_info():
 
 def extract_twa_info():
     # Frame of all twa
-    twaf = pd.read_csv(os.path.join(csvs_location, 'TrustworthinessAttribute.csv'))
+    twaf = pd.read_csv(os.path.join(csvs_location, 'TWA.csv'))
     mbf = pd.read_csv(os.path.join(csvs_location, 'TWIS.csv'))
     assets = pd.read_csv(os.path.join(csvs_location, 'TWALocations.csv'))
     threatEntryPoints = pd.read_csv(os.path.join(csvs_location, 'ThreatEntryPoints.csv'))

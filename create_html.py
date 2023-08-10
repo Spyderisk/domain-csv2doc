@@ -298,13 +298,9 @@ def get_from_package(df, package):
 
 @app.route('/package/<uri>/')
 def see_package(uri):
-    # Prepare matching df with packages
-    df = pd.merge(matching_df, root_df, left_on='hasRootPattern', right_on='URI')
-    matching_df_packages = df.rename(columns={'URI_x': 'URI'})
-
     # Prepare lists of items in package
     root = get_from_package(root_df, uri)
-    matching = get_from_package(matching_df_packages, uri)
+    matching = get_from_package(matching_df, uri)
     construction = get_from_package(construction_df, uri)
     threats = get_from_package(threat_df, uri)
     misbehaviour = get_from_package(misbehaviour_df, uri)
@@ -522,7 +518,7 @@ def prepare_data_frames(csvs_location):
     controls_df = get_csv(csvs_location, 'Control.csv')
     role_df = get_csv(csvs_location, 'Role.csv')
     package_df = get_csv(csvs_location, 'Packages.csv').rename(columns={'Package': 'label', 'Description': 'comment'})
-    twa_df = get_csv(csvs_location, 'TrustworthinessAttribute.csv')
+    twa_df = get_csv(csvs_location, 'TWA.csv')
     asset_df = get_csv(csvs_location, 'DomainAsset.csv')
     set_domain_model_version(get_csv(csvs_location, 'DomainModel.csv'))
 
@@ -567,11 +563,7 @@ def add_package(df):
 
 def prepare_packages():
     add_package(root_df)
-
-    # Prepare matching df with packages
-    mat_df = pd.merge(matching_df, root_df, left_on='hasRootPattern', right_on='URI')
-    mat_df_packages = mat_df.rename(columns={'URI_x': 'URI'})
-    add_package(mat_df_packages)
+    add_package(matching_df)
     add_package(construction_df)
     add_package(threat_df)
     add_package(misbehaviour_df)
@@ -697,9 +689,7 @@ def set_category_prev_next(pattern_type, df):
 
 def prepare_prev_next_indexing():
     set_category_prev_next('root', root_df)
-    mat_df = pd.merge(matching_df, root_df, left_on='hasRootPattern', right_on='URI')
-    mat_df = mat_df.rename(columns={'URI_x': 'URI'})
-    set_category_prev_next('matching', mat_df)
+    set_category_prev_next('matching', matching_df)
     set_category_prev_next('const_pattern', construction_df)
     set_category_prev_next('threat', threat_df)
     set_category_prev_next('misbehaviour', misbehaviour_df)
