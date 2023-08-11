@@ -907,7 +907,7 @@ def generate_all_patterns(user_input):
     # extract_controls_info()
     # extract_control_strategy_info()
     # extract_twa_info()
-    # extract_asset_info()
+    extract_asset_info()
 
     # print('Generating Root Patterns...')
     # generate_root_patterns()
