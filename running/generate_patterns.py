@@ -228,12 +228,14 @@ def extract_misbehaviour_info():
 def extract_controls_info():
     # Frame of all controls
     csf = pd.read_csv(os.path.join(csvs_location, 'Control.csv'))
-    control_sets = pd.read_csv(os.path.join(csvs_location, 'ControlSet.csv'))
     control_locations = pd.read_csv(os.path.join(csvs_location, 'ControlLocations.csv'))
+    controls = pd.read_csv(os.path.join(csvs_location, 'ControlStrategyControls.csv'))
 
     # If example line present, remove
     if 'domain#000000' in csf['URI'].tolist():
         csf.drop(0, axis=0, inplace=True)
+    if 'domain#000000' in control_locations['URI'].tolist():
+        control_locations.drop(0, axis=0, inplace=True)
 
     controls = {}
 
@@ -248,13 +250,9 @@ def extract_controls_info():
         
         controls[row['URI']] = []
 
-    # # Add assets to controls
+    # Add assets to controls
     for index, row in control_locations.iterrows():
         controls[row['URI']].append('Asset:' + row['metaLocatedAt'][7:] + '\n')
-
-    # Add controls to each role
-    for index, row in control_sets.iterrows():
-        add_to_info_file('Role', row['locatedAt'][7:], 'Control:' + row['hasControl'][7:] + '\n')
     
     # Create info files
     for item in controls:
@@ -904,7 +902,7 @@ def generate_all_patterns(user_input):
     # print('Extracting CSV Info...')
     # extract_role_info()
     # extract_misbehaviour_info()
-    # extract_controls_info()
+    extract_controls_info()
     extract_control_strategy_info()
     extract_twa_info()
     extract_asset_info()
