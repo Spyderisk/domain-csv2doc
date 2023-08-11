@@ -37,7 +37,7 @@ import shutil
 
 # Running Values
 csvs_location = ''
-images_location = ''
+icons_location = ''
 target_location = os.path.join(os.path.dirname(__file__), '..', 'static')
 root_graphs_setup = {}
 root_graphs_final = {}
@@ -75,8 +75,8 @@ def set_csv_location(user_input):
     csvs_location = os.path.join(user_input, 'csv')
 
 def set_images_location(user_input):
-    global images_location
-    images_location = os.path.join(user_input, 'images')
+    global icons_location
+    icons_location = os.path.join(user_input, 'icons')
 
 
 def check_configuration():
@@ -126,9 +126,9 @@ def setup_folder_structure():
         os.mkdir(os.path.join(target_location, 'Asset'))
     
     # Copy images into static folder
-    files = os.listdir(images_location)
+    files = os.listdir(icons_location)
     for file in files:
-        shutil.copy2(os.path.join(images_location, file), os.path.join(target_location, 'Images'))
+        shutil.copy2(os.path.join(icons_location, file), os.path.join(target_location, 'Images'))
 
 
 def create_info_file(file, string):
