@@ -905,7 +905,7 @@ def generate_all_patterns(user_input):
     # extract_role_info()
     # extract_misbehaviour_info()
     # extract_controls_info()
-    # extract_control_strategy_info()
+    extract_control_strategy_info()
     extract_twa_info()
     extract_asset_info()
 
