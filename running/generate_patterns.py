@@ -789,15 +789,16 @@ def extract_additional_control_strategy_info():
 
 def extract_twa_info():
     # Frame of all twa
-    twaf = pd.read_csv(os.path.join(csvs_location, 'TWA.csv'))
+    twaf = pd.read_csv(os.path.join(csvs_location, 'TrustworthinessAttribute.csv'))
     mbf = pd.read_csv(os.path.join(csvs_location, 'TWIS.csv'))
     assets = pd.read_csv(os.path.join(csvs_location, 'TWALocations.csv'))
     threatEntryPoints = pd.read_csv(os.path.join(csvs_location, 'ThreatEntryPoints.csv'))
-    twas = pd.read_csv(os.path.join(csvs_location, 'TWAS.csv'))
 
     # If example line present, remove
     if 'domain#000000' in twaf['URI'].tolist():
         twaf.drop(0, axis=0, inplace=True)
+    if 'domain#000000' in assets['URI'].tolist():
+        assets.drop(0, axis=0, inplace=True)
 
     # Create dictionary to hold info until creating info files
     tws = {}
@@ -827,8 +828,7 @@ def extract_twa_info():
     for index, row in threatEntryPoints.iterrows():
         threatURI = row['URI']
         twasURI = row['hasEntryPoint']
-        twaURI = twas.loc[twas['URI'] == twasURI]['hasTrustworthinessAttribute'].iloc[0]
-
+        twaURI = 'domain#' + twasURI.split('-', 1)[1].rsplit('-', 1)[0]
         tws[twaURI].append('ThreatCaused:' + threatURI[7:] + '\n')
 
     # Create info files
@@ -906,7 +906,7 @@ def generate_all_patterns(user_input):
     # extract_misbehaviour_info()
     # extract_controls_info()
     # extract_control_strategy_info()
-    # extract_twa_info()
+    extract_twa_info()
     extract_asset_info()
 
     # print('Generating Root Patterns...')
