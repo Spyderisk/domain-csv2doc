@@ -60,7 +60,7 @@ def run_all(user_inputs):
     # Generate Patterns & graphs
     generate_all_patterns(user_inputs[1])
     # Create static html
-    freeze_html(user_inputs[1])
+    # freeze_html(user_inputs[1])
 
 
 if __name__ == '__main__':
