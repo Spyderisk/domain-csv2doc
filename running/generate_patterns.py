@@ -901,8 +901,8 @@ def generate_all_patterns(user_input):
         return
 
     setup_folder_structure()
-    # print('Extracting CSV Info...')
-    # extract_role_info()
+    print('Extracting CSV Info...')
+    extract_role_info()
     extract_misbehaviour_info()
     extract_controls_info()
     extract_control_strategy_info()
