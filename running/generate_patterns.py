@@ -78,6 +78,9 @@ def set_images_location(user_input):
     global icons_location
     icons_location = os.path.join(user_input, 'icons')
 
+# Extract a trustworthiness attribute URI from a TWAS URI
+def twasToTwa(s):
+    return('domain#' + s.split('-', 1)[1].rsplit('-', 1)[0])
 
 def check_configuration():
     # Access global values
@@ -169,12 +172,15 @@ def extract_misbehaviour_info():
     twis = pd.read_csv(os.path.join(csvs_location, 'TWIS.csv'))
     misbehaviour_locations = pd.read_csv(os.path.join(csvs_location, 'MisbehaviourLocations.csv'))
     threat_sec = pd.read_csv(os.path.join(csvs_location, 'ThreatSEC.csv'))
-    twas = pd.read_csv(os.path.join(csvs_location, 'TWAS.csv'))
     threat_entry_points = pd.read_csv(os.path.join(csvs_location, 'ThreatEntryPoints.csv'))
 
     # If example line present, remove
     if 'domain#000000' in mbf['URI'].tolist():
         mbf.drop(0, axis=0, inplace=True)
+    if 'domain#000000' in misbehaviour_locations['URI'].tolist():
+        misbehaviour_locations.drop(0, axis=0, inplace=True)
+    if 'domain#000000' in threat_entry_points['URI'].tolist():
+        threat_entry_points.drop(0, axis=0, inplace=True)
 
     # Create dictionary to hold info until creating info files
     misbehaviours = {}
@@ -192,19 +198,15 @@ def extract_misbehaviour_info():
     
     # Add twa to each misbehaviour if they have one
     for index, row in twis.iterrows():
-        #TODO: remove this if statement (makes the code work with old version of domain model)
-        if row['affectedBy'] in misbehaviours:
-            misbehaviours[row['affectedBy']].append('TWA:' + row['affects'][7:] + '\n')
+        misbehaviours[row['affectedBy']].append('TWA:' + row['affects'][7:] + '\n')
     
     # Create dataframe connecting misbehaviours to threats via associated trustworthiness attribute
-    twas = twas.drop(columns=['locatedAt', 'package'])
-    twaThreats = pd.merge(threat_entry_points, twas, left_on='hasEntryPoint', right_on='URI')
-    twaThreats = twaThreats.drop(columns=['hasEntryPoint', 'URI_y'])
-    twaMisbehaviour = twis.drop(columns=['URI', 'label'])
-    twaThreats = pd.merge(twaThreats, twaMisbehaviour, left_on='hasTrustworthinessAttribute', right_on='affects')
-    twaThreats = twaThreats.drop(columns=['affects', 'hasTrustworthinessAttribute'])
+    threat_entry_points['hasEntryPoint'] = threat_entry_points['hasEntryPoint'].apply(twasToTwa)
+    twaThreats = pd.merge(threat_entry_points, twis, left_on='hasEntryPoint', right_on='affects')
+    twaThreats = twaThreats.drop(columns={'package_x', 'package_y', 'URI_y'})
     twaThreats = twaThreats.drop_duplicates()
     twaThreats = twaThreats.rename(columns={"URI_x": "threat", "affectedBy": "misbehaviour"})
+
     # Add threats caused by twa
     for index, row in twaThreats.iterrows():
         misbehaviours[row['misbehaviour']].append('twaThreat:' + row['threat'][7:] + '\n')
@@ -826,7 +828,7 @@ def extract_twa_info():
     for index, row in threatEntryPoints.iterrows():
         threatURI = row['URI']
         twasURI = row['hasEntryPoint']
-        twaURI = 'domain#' + twasURI.split('-', 1)[1].rsplit('-', 1)[0]
+        twaURI = twasToTwa(twasURI)
         tws[twaURI].append('ThreatCaused:' + threatURI[7:] + '\n')
 
     # Create info files
@@ -901,7 +903,7 @@ def generate_all_patterns(user_input):
     setup_folder_structure()
     # print('Extracting CSV Info...')
     # extract_role_info()
-    # extract_misbehaviour_info()
+    extract_misbehaviour_info()
     extract_controls_info()
     extract_control_strategy_info()
     extract_twa_info()
