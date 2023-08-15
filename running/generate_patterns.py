@@ -385,14 +385,15 @@ def generate_root_patterns():
     rpf = pd.read_csv(os.path.join(csvs_location, 'RootPattern.csv'))
 
     # Frame of all nodes
-    root_nodes = pd.read_csv(os.path.join(csvs_location, 'RootPatternNodes.csv'))
-    all_nodes = pd.read_csv(os.path.join(csvs_location, 'Node.csv'))
-    nodes = pd.merge(root_nodes, all_nodes, left_on='hasNode', right_on='URI')
+    nodes = pd.read_csv(os.path.join(csvs_location, 'RootPatternNodes.csv'))
+    nodes['hasRole'] = nodes['hasNode'].apply(lambda s : 'domain#Role_' + s.split('-')[1])
+    nodes['metaHasAsset'] = nodes['hasNode'].apply(lambda s : 'domain#' + s.split('-')[2])
 
     # Frame of all links
-    root_links = pd.read_csv(os.path.join(csvs_location, 'RootPatternLinks.csv'))
-    role_links = pd.read_csv(os.path.join(csvs_location, 'RoleLink.csv'))
-    links = pd.merge(root_links, role_links, left_on='hasLink', right_on='URI')
+    links = pd.read_csv(os.path.join(csvs_location, 'RootPatternLinks.csv'))
+    links['linksFrom'] = links['hasLink'].apply(lambda s : 'domain#Role_' + s.split('-')[1])
+    links['linksTo'] = links['hasLink'].apply(lambda s : 'domain#Role_' + s.split('-')[3])
+    links['linkType'] = links['hasLink'].apply(lambda s : 'domain#' + s.split('-')[2])
 
     # Target folder
     target = os.path.join(target_location, 'Root')
@@ -422,8 +423,8 @@ def generate_root_patterns():
         final_graph.attr(splines='polyline', overlap='scale')  # , size='25.7,8.3!')
 
         # Select frames
-        related_nodes = nodes.loc[nodes['URI_x'] == uri]
-        related_links = links.loc[links['URI_x'] == uri]
+        related_nodes = nodes.loc[nodes['URI'] == uri]
+        related_links = links.loc[links['URI'] == uri]
 
         # Add all nodes
         for ind in related_nodes.index:
@@ -909,8 +910,8 @@ def generate_all_patterns(user_input):
     extract_twa_info()
     extract_asset_info()
 
-    # print('Generating Root Patterns...')
-    # generate_root_patterns()
+    print('Generating Root Patterns...')
+    generate_root_patterns()
     # print('Generating Matching Pattern Setup...')
     # generate_initial_matching_patterns()
 
