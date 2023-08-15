@@ -459,17 +459,19 @@ def generate_initial_matching_patterns():
 
     # Frame of all nodes
     matching_nodes = pd.read_csv(os.path.join(csvs_location, 'MatchingPatternNodes.csv'))
-    all_nodes = pd.read_csv(os.path.join(csvs_location, 'Node.csv'))
-    nodes = pd.merge(matching_nodes, all_nodes, left_on='hasNode', right_on='URI')
+    nodes = matching_nodes.copy()
+    nodes['hasRole'] = nodes['hasNode'].apply(lambda s : 'domain#Role_' + s.split('-')[1])
+    nodes['metaHasAsset'] = nodes['hasNode'].apply(lambda s : 'domain#' + s.split('-')[2])
 
     # Frame of all distinct nodes
     matching_dng = pd.read_csv(os.path.join(csvs_location, 'MatchingPatternDNG.csv'))
     distinct = pd.read_csv(os.path.join(csvs_location, 'DistinctNodeGroupNodes.csv'))
 
     # Frame of all links
-    matching_links = pd.read_csv(os.path.join(csvs_location, 'MatchingPatternLinks.csv'))
-    role_links = pd.read_csv(os.path.join(csvs_location, 'RoleLink.csv'))
-    links = pd.merge(matching_links, role_links, left_on='hasLink', right_on='URI')
+    links = pd.read_csv(os.path.join(csvs_location, 'MatchingPatternLinks.csv'))
+    links['linksFrom'] = links['hasLink'].apply(lambda s : 'domain#Role_' + s.split('-')[1])
+    links['linksTo'] = links['hasLink'].apply(lambda s : 'domain#Role_' + s.split('-')[3])
+    links['linkType'] = links['hasLink'].apply(lambda s : 'domain#' + s.split('-')[2])
 
     # Target folder
     target = os.path.join(target_location, 'Matching')
@@ -503,8 +505,8 @@ def generate_initial_matching_patterns():
         pattern_info = row['hasRootPattern'][7:] + '\n'
 
         # Select Frames
-        related_nodes = nodes.loc[nodes['URI_x'] == uri]
-        related_links = links.loc[links['URI_x'] == uri]
+        related_nodes = nodes.loc[nodes['URI'] == uri]
+        related_links = links.loc[links['URI'] == uri]
         related_dng = matching_dng.loc[matching_dng['URI'] == uri]
 
         # Add matching Nodes depending on population
@@ -912,8 +914,8 @@ def generate_all_patterns(user_input):
 
     print('Generating Root Patterns...')
     generate_root_patterns()
-    # print('Generating Matching Pattern Setup...')
-    # generate_initial_matching_patterns()
+    print('Generating Matching Pattern Setup...')
+    generate_initial_matching_patterns()
 
     # print('Generating Forced Position Matching Patterns...')
     # generate_final_matching_patterns()
