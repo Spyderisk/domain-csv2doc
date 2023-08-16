@@ -489,10 +489,9 @@ def get_csv(csvs_location, csv_name):
     return df
 
 
-def set_domain_model_version(df):
+def set_domain_model_version(s):
     global model_version
-    # model_version = df.iloc[0]['versionInfo']
-    model_version = 'idk'
+    model_version = s
 
 
 def prepare_data_frames(csvs_location):
@@ -707,7 +706,7 @@ def prepare_prev_next_indexing():
     add_prev_next_index('const_priority', sorted_by_priority)
 
 
-def generate_html(csvs_directory):
+def generate_html(csvs_directory, version_info):
     prepare_css()
     prepare_data_frames(csvs_directory)
     prepare_descriptions()
@@ -716,6 +715,7 @@ def generate_html(csvs_directory):
     prepare_construction_priorities()
     prepare_labels()
     prepare_prev_next_indexing()
+    set_domain_model_version(version_info)
 
 
 if __name__ == '__main__':
