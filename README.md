@@ -137,7 +137,7 @@ pip install -r requirements.txt
 
 ## Tool setup:
 
-Before running the tool, the full domain model csvs must be in one folder
+Before running the tool, the full domain model must be in one folder
 on the local computer. You will need to get the relative or absolute filepath
 for that folder to use as input.
 
