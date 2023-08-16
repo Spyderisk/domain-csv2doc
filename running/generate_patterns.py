@@ -616,14 +616,15 @@ def generate_construction_patterns():
     cpf = pd.read_csv(os.path.join(csvs_location, 'ConstructionPattern.csv'))
 
     # Frame of all Construction Nodes
-    constructed_nodes = pd.read_csv(os.path.join(csvs_location, 'InferredNodeSetting.csv'))
-    all_nodes = pd.read_csv(os.path.join(csvs_location, 'Node.csv'))
-    nodes = pd.merge(constructed_nodes, all_nodes, left_on='hasNode', right_on='URI')
+    nodes = pd.read_csv(os.path.join(csvs_location, 'InferredNodeSetting.csv'))
+    nodes['hasRole'] = nodes['hasNode'].apply(lambda s : 'domain#Role_' + s.split('-')[1])
+    nodes['metaHasAsset'] = nodes['hasNode'].apply(lambda s : 'domain#' + s.split('-')[2])
 
     # Frame of all Construction Relations
-    constructed_relations = pd.read_csv(os.path.join(csvs_location, 'ConstructionPatternLinks.csv'))
-    role_links = pd.read_csv(os.path.join(csvs_location, 'RoleLink.csv'))
-    links = pd.merge(constructed_relations, role_links, left_on='hasInferredLink', right_on='URI')
+    links = pd.read_csv(os.path.join(csvs_location, 'ConstructionPatternLinks.csv'))
+    links['linksFrom'] = links['hasInferredLink'].apply(lambda s : 'domain#Role_' + s.split('-')[1])
+    links['linksTo'] = links['hasInferredLink'].apply(lambda s : 'domain#Role_' + s.split('-')[3])
+    links['linkType'] = links['hasInferredLink'].apply(lambda s : 'domain#' + s.split('-')[2])
 
     # Target folder
     target = os.path.join(target_location, 'Construction')
@@ -647,7 +648,7 @@ def generate_construction_patterns():
         # Get graph & select frames
         graph = copy.deepcopy(matching_graphs_final[row['hasMatchingPattern']])
         related_nodes = nodes.loc[nodes['inPattern'] == uri]
-        related_links = links.loc[links['URI_x'] == uri]
+        related_links = links.loc[links['URI'] == uri]
 
         # Add pattern info
         add_to_info_file('Matching', row['hasMatchingPattern'][7:], 'Construction:' + uri[7:] + '\n')
@@ -919,8 +920,8 @@ def generate_all_patterns(user_input):
 
     print('Generating Forced Position Matching Patterns...')
     generate_final_matching_patterns()
-    # print('Generating Construction Patterns...')
-    # generate_construction_patterns()
+    print('Generating Construction Patterns...')
+    generate_construction_patterns()
     # print('Generating Threat Patterns...')
     # generate_threat_patterns()
     # extract_additional_control_strategy_info()
