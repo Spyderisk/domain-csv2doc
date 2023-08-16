@@ -688,13 +688,14 @@ def generate_threat_patterns():
                                right_on='causesMisbehaviour')
 
     # Frame of all Misbehaviour
-    misbehaviour_set = pd.read_csv(os.path.join(csvs_location, 'MisbehaviourSet.csv'))
-    misbehaviour = pd.merge(threat_effects, misbehaviour_set, left_on='causesMisbehaviour', right_on='URI')
+    misbehaviour = threat_effects.copy()
+    misbehaviour['hasMisbehaviour'] = misbehaviour['causesMisbehaviour'].apply(lambda s : 'domain#' + s.split('-', 1)[1].rsplit('-', 1)[0])
+    misbehaviour['locatedAt'] = misbehaviour['causesMisbehaviour'].apply(lambda s : 'domain#Role_' + s.split('-')[-1])
 
     # Frame of all Entry Points
-    entry_points = pd.read_csv(os.path.join(csvs_location, 'ThreatEntryPoints.csv'))
-    trustworthiness = pd.read_csv(os.path.join(csvs_location, 'TWAS.csv'))
-    entries = pd.merge(entry_points, trustworthiness, left_on='hasEntryPoint', right_on='URI')
+    entries = pd.read_csv(os.path.join(csvs_location, 'ThreatEntryPoints.csv'))
+    entries['hasTrustworthinessAttribute'] = entries['hasEntryPoint'].apply(lambda s : 'domain#' + s.split('-', 1)[1].rsplit('-', 1)[0])
+    entries['locatedAt'] = entries['hasEntryPoint'].apply(lambda s : 'domain#Role_' + s.split('-')[-1])
 
     # Frame of all Control Strategies
     control_block = pd.read_csv(os.path.join(csvs_location, 'ControlStrategyBlocks.csv'))
@@ -725,8 +726,8 @@ def generate_threat_patterns():
         related_threat_sec = threat_sec.loc[threat_sec['URI'] == uri]
         related_threat_triggers = threat_triggers.loc[threat_triggers['URI_x'] == uri]
         related_triggered_threats = threat_triggers.loc[threat_triggers['URI_y'] == uri]
-        related_misbehaviour = misbehaviour.loc[misbehaviour['URI_x'] == uri]
-        related_entries = entries.loc[entries['URI_x'] == uri]
+        related_misbehaviour = misbehaviour.loc[misbehaviour['URI'] == uri]
+        related_entries = entries.loc[entries['URI'] == uri]
         related_control_strategies = control_strategies.loc[control_strategies['blocks'] == uri]
 
         # Add pattern info
@@ -922,8 +923,8 @@ def generate_all_patterns(user_input):
     generate_final_matching_patterns()
     print('Generating Construction Patterns...')
     generate_construction_patterns()
-    # print('Generating Threat Patterns...')
-    # generate_threat_patterns()
+    print('Generating Threat Patterns...')
+    generate_threat_patterns()
     # extract_additional_control_strategy_info()
 
     create_report()
