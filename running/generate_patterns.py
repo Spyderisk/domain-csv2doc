@@ -925,7 +925,7 @@ def generate_all_patterns(user_input):
     generate_construction_patterns()
     print('Generating Threat Patterns...')
     generate_threat_patterns()
-    # extract_additional_control_strategy_info()
+    extract_additional_control_strategy_info()
 
     create_report()
 
