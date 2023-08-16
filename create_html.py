@@ -491,7 +491,8 @@ def get_csv(csvs_location, csv_name):
 
 def set_domain_model_version(df):
     global model_version
-    model_version = df.iloc[0]['versionInfo']
+    # model_version = df.iloc[0]['versionInfo']
+    model_version = 'idk'
 
 
 def prepare_data_frames(csvs_location):
@@ -518,7 +519,7 @@ def prepare_data_frames(csvs_location):
     controls_df = get_csv(csvs_location, 'Control.csv')
     role_df = get_csv(csvs_location, 'Role.csv')
     package_df = get_csv(csvs_location, 'Packages.csv').rename(columns={'Package': 'label', 'Description': 'comment'})
-    twa_df = get_csv(csvs_location, 'TWA.csv')
+    twa_df = get_csv(csvs_location, 'TrustworthinessAttribute.csv')
     asset_df = get_csv(csvs_location, 'DomainAsset.csv')
     set_domain_model_version(get_csv(csvs_location, 'DomainModel.csv'))
 
@@ -604,7 +605,10 @@ def add_labels(df, n=7):
     global labels
 
     for index, row in df.iterrows():
-        labels[row['URI'][n:]] = row['label']
+        if 'label' in df:
+            labels[row['URI'][n:]] = row['label']
+        else:
+            labels[row['URI'][n:]] = row['Label']
 
 
 def prepare_labels():

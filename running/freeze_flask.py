@@ -173,7 +173,7 @@ def see_package():
 def see_twa():
     print('twa', end=', ')
     # Get csv
-    df = pd.read_csv(os.path.join(csvs_location, 'TWA.csv'))
+    df = pd.read_csv(os.path.join(csvs_location, 'TrustworthinessAttribute.csv'))
 
     # Remove example line where present
     if 'domain#000000' in df['URI'].tolist():
