@@ -917,8 +917,8 @@ def generate_all_patterns(user_input):
     print('Generating Matching Pattern Setup...')
     generate_initial_matching_patterns()
 
-    # print('Generating Forced Position Matching Patterns...')
-    # generate_final_matching_patterns()
+    print('Generating Forced Position Matching Patterns...')
+    generate_final_matching_patterns()
     # print('Generating Construction Patterns...')
     # generate_construction_patterns()
     # print('Generating Threat Patterns...')
