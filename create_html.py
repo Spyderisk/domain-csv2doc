@@ -298,13 +298,9 @@ def get_from_package(df, package):
 
 @app.route('/package/<uri>/')
 def see_package(uri):
-    # Prepare matching df with packages
-    df = pd.merge(matching_df, root_df, left_on='hasRootPattern', right_on='URI')
-    matching_df_packages = df.rename(columns={'URI_x': 'URI'})
-
     # Prepare lists of items in package
     root = get_from_package(root_df, uri)
-    matching = get_from_package(matching_df_packages, uri)
+    matching = get_from_package(matching_df, uri)
     construction = get_from_package(construction_df, uri)
     threats = get_from_package(threat_df, uri)
     misbehaviour = get_from_package(misbehaviour_df, uri)
@@ -493,9 +489,9 @@ def get_csv(csvs_location, csv_name):
     return df
 
 
-def set_domain_model_version(df):
+def set_domain_model_version(s):
     global model_version
-    model_version = df.iloc[0]['versionInfo']
+    model_version = s
 
 
 def prepare_data_frames(csvs_location):
@@ -567,11 +563,7 @@ def add_package(df):
 
 def prepare_packages():
     add_package(root_df)
-
-    # Prepare matching df with packages
-    mat_df = pd.merge(matching_df, root_df, left_on='hasRootPattern', right_on='URI')
-    mat_df_packages = mat_df.rename(columns={'URI_x': 'URI'})
-    add_package(mat_df_packages)
+    add_package(matching_df)
     add_package(construction_df)
     add_package(threat_df)
     add_package(misbehaviour_df)
@@ -612,7 +604,10 @@ def add_labels(df, n=7):
     global labels
 
     for index, row in df.iterrows():
-        labels[row['URI'][n:]] = row['label']
+        if 'label' in df:
+            labels[row['URI'][n:]] = row['label']
+        else:
+            labels[row['URI'][n:]] = row['Label']
 
 
 def prepare_labels():
@@ -697,9 +692,7 @@ def set_category_prev_next(pattern_type, df):
 
 def prepare_prev_next_indexing():
     set_category_prev_next('root', root_df)
-    mat_df = pd.merge(matching_df, root_df, left_on='hasRootPattern', right_on='URI')
-    mat_df = mat_df.rename(columns={'URI_x': 'URI'})
-    set_category_prev_next('matching', mat_df)
+    set_category_prev_next('matching', matching_df)
     set_category_prev_next('const_pattern', construction_df)
     set_category_prev_next('threat', threat_df)
     set_category_prev_next('misbehaviour', misbehaviour_df)
@@ -713,7 +706,7 @@ def prepare_prev_next_indexing():
     add_prev_next_index('const_priority', sorted_by_priority)
 
 
-def generate_html(csvs_directory):
+def generate_html(csvs_directory, version_info):
     prepare_css()
     prepare_data_frames(csvs_directory)
     prepare_descriptions()
@@ -722,6 +715,7 @@ def generate_html(csvs_directory):
     prepare_construction_priorities()
     prepare_labels()
     prepare_prev_next_indexing()
+    set_domain_model_version(version_info)
 
 
 if __name__ == '__main__':

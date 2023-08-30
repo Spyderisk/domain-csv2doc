@@ -137,14 +137,14 @@ pip install -r requirements.txt
 
 ## Tool setup:
 
-Before running the tool, the full domain model csvs must be in one folder
+Before running the tool, the full domain model must be in one folder
 on the local computer. You will need to get the relative or absolute filepath
 for that folder to use as input.
 
 Run the tool with:
 
 ```shell
-python3 generate_and_show.py csvs_location
+python3 generate_and_show.py domain_model_location version
 ```
 
 ## deactivate virtual env (optional)
@@ -212,7 +212,7 @@ you would put the following into the URL bar:
 The exact names of each type are:
 
 ```
-root, matching, construction, threat, misbehaviour, csg, control, asset, package
+root, matching, construction, threat, misbehaviour, csg, control, role, asset, twa, package
 ```
 
 ### see item

@@ -37,7 +37,7 @@ import shutil
 
 # Running Values
 csvs_location = ''
-images_location = ''
+icons_location = ''
 target_location = os.path.join(os.path.dirname(__file__), '..', 'static')
 root_graphs_setup = {}
 root_graphs_final = {}
@@ -75,9 +75,12 @@ def set_csv_location(user_input):
     csvs_location = os.path.join(user_input, 'csv')
 
 def set_images_location(user_input):
-    global images_location
-    images_location = os.path.join(user_input, 'images')
+    global icons_location
+    icons_location = os.path.join(user_input, 'icons')
 
+# Extract a trustworthiness attribute URI from a TWAS URI
+def twasToTwa(s):
+    return('domain#' + s.split('-', 1)[1].rsplit('-', 1)[0])
 
 def check_configuration():
     # Access global values
@@ -126,9 +129,9 @@ def setup_folder_structure():
         os.mkdir(os.path.join(target_location, 'Asset'))
     
     # Copy images into static folder
-    files = os.listdir(images_location)
+    files = os.listdir(icons_location)
     for file in files:
-        shutil.copy2(os.path.join(images_location, file), os.path.join(target_location, 'Images'))
+        shutil.copy2(os.path.join(icons_location, file), os.path.join(target_location, 'Images'))
 
 
 def create_info_file(file, string):
@@ -169,12 +172,15 @@ def extract_misbehaviour_info():
     twis = pd.read_csv(os.path.join(csvs_location, 'TWIS.csv'))
     misbehaviour_locations = pd.read_csv(os.path.join(csvs_location, 'MisbehaviourLocations.csv'))
     threat_sec = pd.read_csv(os.path.join(csvs_location, 'ThreatSEC.csv'))
-    twas = pd.read_csv(os.path.join(csvs_location, 'TWAS.csv'))
     threat_entry_points = pd.read_csv(os.path.join(csvs_location, 'ThreatEntryPoints.csv'))
 
     # If example line present, remove
     if 'domain#000000' in mbf['URI'].tolist():
         mbf.drop(0, axis=0, inplace=True)
+    if 'domain#000000' in misbehaviour_locations['URI'].tolist():
+        misbehaviour_locations.drop(0, axis=0, inplace=True)
+    if 'domain#000000' in threat_entry_points['URI'].tolist():
+        threat_entry_points.drop(0, axis=0, inplace=True)
 
     # Create dictionary to hold info until creating info files
     misbehaviours = {}
@@ -192,19 +198,15 @@ def extract_misbehaviour_info():
     
     # Add twa to each misbehaviour if they have one
     for index, row in twis.iterrows():
-        #TODO: remove this if statement (makes the code work with old version of domain model)
-        if row['affectedBy'] in misbehaviours:
-            misbehaviours[row['affectedBy']].append('TWA:' + row['affects'][7:] + '\n')
+        misbehaviours[row['affectedBy']].append('TWA:' + row['affects'][7:] + '\n')
     
     # Create dataframe connecting misbehaviours to threats via associated trustworthiness attribute
-    twas = twas.drop(columns=['locatedAt', 'package'])
-    twaThreats = pd.merge(threat_entry_points, twas, left_on='hasEntryPoint', right_on='URI')
-    twaThreats = twaThreats.drop(columns=['hasEntryPoint', 'URI_y'])
-    twaMisbehaviour = twis.drop(columns=['URI', 'label'])
-    twaThreats = pd.merge(twaThreats, twaMisbehaviour, left_on='hasTrustworthinessAttribute', right_on='affects')
-    twaThreats = twaThreats.drop(columns=['affects', 'hasTrustworthinessAttribute'])
+    threat_entry_points['hasEntryPoint'] = threat_entry_points['hasEntryPoint'].apply(twasToTwa)
+    twaThreats = pd.merge(threat_entry_points, twis, left_on='hasEntryPoint', right_on='affects')
+    twaThreats = twaThreats.drop(columns={'package_x', 'package_y', 'URI_y'})
     twaThreats = twaThreats.drop_duplicates()
     twaThreats = twaThreats.rename(columns={"URI_x": "threat", "affectedBy": "misbehaviour"})
+
     # Add threats caused by twa
     for index, row in twaThreats.iterrows():
         misbehaviours[row['misbehaviour']].append('twaThreat:' + row['threat'][7:] + '\n')
@@ -228,12 +230,14 @@ def extract_misbehaviour_info():
 def extract_controls_info():
     # Frame of all controls
     csf = pd.read_csv(os.path.join(csvs_location, 'Control.csv'))
-    control_sets = pd.read_csv(os.path.join(csvs_location, 'ControlSet.csv'))
     control_locations = pd.read_csv(os.path.join(csvs_location, 'ControlLocations.csv'))
+    controls = pd.read_csv(os.path.join(csvs_location, 'ControlStrategyControls.csv'))
 
     # If example line present, remove
     if 'domain#000000' in csf['URI'].tolist():
         csf.drop(0, axis=0, inplace=True)
+    if 'domain#000000' in control_locations['URI'].tolist():
+        control_locations.drop(0, axis=0, inplace=True)
 
     controls = {}
 
@@ -248,13 +252,9 @@ def extract_controls_info():
         
         controls[row['URI']] = []
 
-    # # Add assets to controls
+    # Add assets to controls
     for index, row in control_locations.iterrows():
         controls[row['URI']].append('Asset:' + row['metaLocatedAt'][7:] + '\n')
-
-    # Add controls to each role
-    for index, row in control_sets.iterrows():
-        add_to_info_file('Role', row['locatedAt'][7:], 'Control:' + row['hasControl'][7:] + '\n')
     
     # Create info files
     for item in controls:
@@ -385,14 +385,15 @@ def generate_root_patterns():
     rpf = pd.read_csv(os.path.join(csvs_location, 'RootPattern.csv'))
 
     # Frame of all nodes
-    root_nodes = pd.read_csv(os.path.join(csvs_location, 'RootPatternNodes.csv'))
-    all_nodes = pd.read_csv(os.path.join(csvs_location, 'Node.csv'))
-    nodes = pd.merge(root_nodes, all_nodes, left_on='hasNode', right_on='URI')
+    nodes = pd.read_csv(os.path.join(csvs_location, 'RootPatternNodes.csv'))
+    nodes['hasRole'] = nodes['hasNode'].apply(lambda s : 'domain#Role_' + s.split('-')[1])
+    nodes['metaHasAsset'] = nodes['hasNode'].apply(lambda s : 'domain#' + s.split('-')[2])
 
     # Frame of all links
-    root_links = pd.read_csv(os.path.join(csvs_location, 'RootPatternLinks.csv'))
-    role_links = pd.read_csv(os.path.join(csvs_location, 'RoleLink.csv'))
-    links = pd.merge(root_links, role_links, left_on='hasLink', right_on='URI')
+    links = pd.read_csv(os.path.join(csvs_location, 'RootPatternLinks.csv'))
+    links['linksFrom'] = links['hasLink'].apply(lambda s : 'domain#Role_' + s.split('-')[1])
+    links['linksTo'] = links['hasLink'].apply(lambda s : 'domain#Role_' + s.split('-')[3])
+    links['linkType'] = links['hasLink'].apply(lambda s : 'domain#' + s.split('-')[2])
 
     # Target folder
     target = os.path.join(target_location, 'Root')
@@ -422,8 +423,8 @@ def generate_root_patterns():
         final_graph.attr(splines='polyline', overlap='scale')  # , size='25.7,8.3!')
 
         # Select frames
-        related_nodes = nodes.loc[nodes['URI_x'] == uri]
-        related_links = links.loc[links['URI_x'] == uri]
+        related_nodes = nodes.loc[nodes['URI'] == uri]
+        related_links = links.loc[links['URI'] == uri]
 
         # Add all nodes
         for ind in related_nodes.index:
@@ -458,17 +459,19 @@ def generate_initial_matching_patterns():
 
     # Frame of all nodes
     matching_nodes = pd.read_csv(os.path.join(csvs_location, 'MatchingPatternNodes.csv'))
-    all_nodes = pd.read_csv(os.path.join(csvs_location, 'Node.csv'))
-    nodes = pd.merge(matching_nodes, all_nodes, left_on='hasNode', right_on='URI')
+    nodes = matching_nodes.copy()
+    nodes['hasRole'] = nodes['hasNode'].apply(lambda s : 'domain#Role_' + s.split('-')[1])
+    nodes['metaHasAsset'] = nodes['hasNode'].apply(lambda s : 'domain#' + s.split('-')[2])
 
     # Frame of all distinct nodes
     matching_dng = pd.read_csv(os.path.join(csvs_location, 'MatchingPatternDNG.csv'))
     distinct = pd.read_csv(os.path.join(csvs_location, 'DistinctNodeGroupNodes.csv'))
 
     # Frame of all links
-    matching_links = pd.read_csv(os.path.join(csvs_location, 'MatchingPatternLinks.csv'))
-    role_links = pd.read_csv(os.path.join(csvs_location, 'RoleLink.csv'))
-    links = pd.merge(matching_links, role_links, left_on='hasLink', right_on='URI')
+    links = pd.read_csv(os.path.join(csvs_location, 'MatchingPatternLinks.csv'))
+    links['linksFrom'] = links['hasLink'].apply(lambda s : 'domain#Role_' + s.split('-')[1])
+    links['linksTo'] = links['hasLink'].apply(lambda s : 'domain#Role_' + s.split('-')[3])
+    links['linkType'] = links['hasLink'].apply(lambda s : 'domain#' + s.split('-')[2])
 
     # Target folder
     target = os.path.join(target_location, 'Matching')
@@ -502,8 +505,8 @@ def generate_initial_matching_patterns():
         pattern_info = row['hasRootPattern'][7:] + '\n'
 
         # Select Frames
-        related_nodes = nodes.loc[nodes['URI_x'] == uri]
-        related_links = links.loc[links['URI_x'] == uri]
+        related_nodes = nodes.loc[nodes['URI'] == uri]
+        related_links = links.loc[links['URI'] == uri]
         related_dng = matching_dng.loc[matching_dng['URI'] == uri]
 
         # Add matching Nodes depending on population
@@ -581,8 +584,6 @@ def generate_initial_matching_patterns():
 def generate_final_matching_patterns():
     # Get frame of all matching patterns
     mpf = pd.read_csv(os.path.join(csvs_location, 'MatchingPattern.csv'))
-    rpf = pd.read_csv(os.path.join(csvs_location, 'RootPattern.csv'))
-    df = pd.merge(mpf, rpf, left_on='hasRootPattern', right_on='URI')
 
     # Target folder
     target = os.path.join(target_location, 'Matching')
@@ -594,7 +595,7 @@ def generate_final_matching_patterns():
     # Create all
     for uri in matching_graphs_final:
         # Determine package
-        package = df.loc[df['URI_x'] == uri].iloc[0]['package']
+        package = mpf.loc[mpf['URI'] == uri].iloc[0]['package']
 
         # Create graph & select frames
         graph = matching_graphs_final[uri]
@@ -615,14 +616,15 @@ def generate_construction_patterns():
     cpf = pd.read_csv(os.path.join(csvs_location, 'ConstructionPattern.csv'))
 
     # Frame of all Construction Nodes
-    constructed_nodes = pd.read_csv(os.path.join(csvs_location, 'InferredNodeSetting.csv'))
-    all_nodes = pd.read_csv(os.path.join(csvs_location, 'Node.csv'))
-    nodes = pd.merge(constructed_nodes, all_nodes, left_on='hasNode', right_on='URI')
+    nodes = pd.read_csv(os.path.join(csvs_location, 'InferredNodeSetting.csv'))
+    nodes['hasRole'] = nodes['hasNode'].apply(lambda s : 'domain#Role_' + s.split('-')[1])
+    nodes['metaHasAsset'] = nodes['hasNode'].apply(lambda s : 'domain#' + s.split('-')[2])
 
     # Frame of all Construction Relations
-    constructed_relations = pd.read_csv(os.path.join(csvs_location, 'ConstructionPatternLinks.csv'))
-    role_links = pd.read_csv(os.path.join(csvs_location, 'RoleLink.csv'))
-    links = pd.merge(constructed_relations, role_links, left_on='hasInferredLink', right_on='URI')
+    links = pd.read_csv(os.path.join(csvs_location, 'ConstructionPatternLinks.csv'))
+    links['linksFrom'] = links['hasInferredLink'].apply(lambda s : 'domain#Role_' + s.split('-')[1])
+    links['linksTo'] = links['hasInferredLink'].apply(lambda s : 'domain#Role_' + s.split('-')[3])
+    links['linkType'] = links['hasInferredLink'].apply(lambda s : 'domain#' + s.split('-')[2])
 
     # Target folder
     target = os.path.join(target_location, 'Construction')
@@ -646,7 +648,7 @@ def generate_construction_patterns():
         # Get graph & select frames
         graph = copy.deepcopy(matching_graphs_final[row['hasMatchingPattern']])
         related_nodes = nodes.loc[nodes['inPattern'] == uri]
-        related_links = links.loc[links['URI_x'] == uri]
+        related_links = links.loc[links['URI'] == uri]
 
         # Add pattern info
         add_to_info_file('Matching', row['hasMatchingPattern'][7:], 'Construction:' + uri[7:] + '\n')
@@ -686,13 +688,14 @@ def generate_threat_patterns():
                                right_on='causesMisbehaviour')
 
     # Frame of all Misbehaviour
-    misbehaviour_set = pd.read_csv(os.path.join(csvs_location, 'MisbehaviourSet.csv'))
-    misbehaviour = pd.merge(threat_effects, misbehaviour_set, left_on='causesMisbehaviour', right_on='URI')
+    misbehaviour = threat_effects.copy()
+    misbehaviour['hasMisbehaviour'] = misbehaviour['causesMisbehaviour'].apply(lambda s : 'domain#' + s.split('-', 1)[1].rsplit('-', 1)[0])
+    misbehaviour['locatedAt'] = misbehaviour['causesMisbehaviour'].apply(lambda s : 'domain#Role_' + s.split('-')[-1])
 
     # Frame of all Entry Points
-    entry_points = pd.read_csv(os.path.join(csvs_location, 'ThreatEntryPoints.csv'))
-    trustworthiness = pd.read_csv(os.path.join(csvs_location, 'TWAS.csv'))
-    entries = pd.merge(entry_points, trustworthiness, left_on='hasEntryPoint', right_on='URI')
+    entries = pd.read_csv(os.path.join(csvs_location, 'ThreatEntryPoints.csv'))
+    entries['hasTrustworthinessAttribute'] = entries['hasEntryPoint'].apply(lambda s : 'domain#' + s.split('-', 1)[1].rsplit('-', 1)[0])
+    entries['locatedAt'] = entries['hasEntryPoint'].apply(lambda s : 'domain#Role_' + s.split('-')[-1])
 
     # Frame of all Control Strategies
     control_block = pd.read_csv(os.path.join(csvs_location, 'ControlStrategyBlocks.csv'))
@@ -723,8 +726,8 @@ def generate_threat_patterns():
         related_threat_sec = threat_sec.loc[threat_sec['URI'] == uri]
         related_threat_triggers = threat_triggers.loc[threat_triggers['URI_x'] == uri]
         related_triggered_threats = threat_triggers.loc[threat_triggers['URI_y'] == uri]
-        related_misbehaviour = misbehaviour.loc[misbehaviour['URI_x'] == uri]
-        related_entries = entries.loc[entries['URI_x'] == uri]
+        related_misbehaviour = misbehaviour.loc[misbehaviour['URI'] == uri]
+        related_entries = entries.loc[entries['URI'] == uri]
         related_control_strategies = control_strategies.loc[control_strategies['blocks'] == uri]
 
         # Add pattern info
@@ -795,11 +798,12 @@ def extract_twa_info():
     mbf = pd.read_csv(os.path.join(csvs_location, 'TWIS.csv'))
     assets = pd.read_csv(os.path.join(csvs_location, 'TWALocations.csv'))
     threatEntryPoints = pd.read_csv(os.path.join(csvs_location, 'ThreatEntryPoints.csv'))
-    twas = pd.read_csv(os.path.join(csvs_location, 'TWAS.csv'))
 
     # If example line present, remove
     if 'domain#000000' in twaf['URI'].tolist():
         twaf.drop(0, axis=0, inplace=True)
+    if 'domain#000000' in assets['URI'].tolist():
+        assets.drop(0, axis=0, inplace=True)
 
     # Create dictionary to hold info until creating info files
     tws = {}
@@ -829,8 +833,7 @@ def extract_twa_info():
     for index, row in threatEntryPoints.iterrows():
         threatURI = row['URI']
         twasURI = row['hasEntryPoint']
-        twaURI = twas.loc[twas['URI'] == twasURI]['hasTrustworthinessAttribute'].iloc[0]
-
+        twaURI = twasToTwa(twasURI)
         tws[twaURI].append('ThreatCaused:' + threatURI[7:] + '\n')
 
     # Create info files
