@@ -1,12 +1,12 @@
 # csv2doc
 
-csv2dec is a tool to automatically generate documentation for a given Spyderisk
-domain model. It takes the domain model in csv format, creates a folder
+csv2doc is a tool to automatically generate documentation for a given Spyderisk
+domain model. It takes the domain model in CSV format, creates a folder
 containing the generated data, and then runs a locally accessible user interface for
 that documentation.
 
-A detailed breakdown of the code can be found in [DEVELOPMENT.md](./DEVELOPMENT.md).
-It is recommended that you review this in full, before making any major changes to the tool.
+This tool is a bit over 2000 lines of Python code, and a detailed description of the internals is 
+in [DEVELOPMENT.md](./DEVELOPMENT.md). We suggest you read this before making any changes to the code.
 
 # Running the tool
 
