@@ -1,0 +1,7 @@
+# Run Spyderisk domain docs tree updater.
+# Use either this, or the systemd equivalent, but not both.
+# Check the paths and values for your system, don't just copy blindly!
+
+# Run the script every 30 minutes
+
+*/30 * * * * /root/build-domain-docs.sh >/tmp/build.log 2>&1

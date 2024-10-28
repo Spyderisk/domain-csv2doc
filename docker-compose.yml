@@ -1,0 +1,26 @@
+version: '3.7'
+services:
+  proxy:
+    image: nginx:stable-alpine3.17
+    ports:
+      - ${PROXY_EXTERNAL_PORT:-8089}:80
+    restart: on-failure
+    depends_on:
+      - domain-docs
+    volumes:
+      - type: bind
+        source: ./www/html
+        target: /usr/share/nginx/html
+    networks:
+      - ssm_domain_docs_net
+
+  domain-docs:
+    build: .
+    container_name: ssm-domain-docs
+    volumes:
+      - ./:/code
+    networks:
+      - ssm_domain_docs_net
+
+networks:
+  ssm_domain_docs_net:
